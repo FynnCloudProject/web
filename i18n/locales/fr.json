@@ -1,0 +1,129 @@
+{
+    "auth": {
+        "login": {
+            "title": "Se connecter",
+            "footer": "Vous n'avez pas de compte ?",
+            "action": "S'inscrire",
+            "error": {
+                "invalidCredentials": "Identifiants invalides"
+            }
+        },
+        "register": {
+            "title": "S'inscrire",
+            "footer": "Vous avez déjà un compte ?",
+            "action": "Se connecter",
+            "error": {
+                "usernameExists": "Ce nom d'utilisateur est déjà pris",
+                "passwordMismatch": "Les mots de passe ne correspondent pas"
+            }
+        },
+        "username": "Nom d'utilisateur",
+        "password": "Mot de passe",
+        "confirmPassword": "Confirmer le mot de passe"
+    },
+    "welcome": "Bienvenue",
+    "error": {
+        "title": "Erreur",
+        "message": "Une erreur est survenue",
+        "serverUnreachable": "Serveur inaccessible",
+        "generic": "Une erreur est survenue",
+        "unknown": "Une erreur inconnue est survenue",
+        "auth": {
+            "register": {
+                "usernameTaken": "Ce nom d'utilisateur est déjà pris",
+                "emailTaken": "Cette adresse e-mail est déjà prise",
+                "passwordsDoNotMatch": "Les mots de passe ne correspondent pas"
+            },
+            "login": {
+                "invalidCredentials": "Nom d'utilisateur ou mot de passe invalide"
+            }
+        }
+    },
+    "navigation": {
+        "allFiles": "Tous les fichiers",
+        "recentFiles": "Fichiers récents",
+        "favoriteFiles": "Favoris",
+        "sharedFiles": "Partagés",
+        "settings": "Paramètres",
+        "trash": "Corbeille",
+        "logout": "Déconnexion"
+    },
+    "files": {
+        "empty": "Aucun fichier trouvé",
+        "dragAndDrop": "Glissez-déposez des fichiers ici pour les téléverser",
+        "dragAndDropHint": "Glissez des fichiers ici ou créez un nouveau dossier",
+        "upload": "Téléverser",
+        "newFolder": "Nouveau dossier",
+        "type": {
+            "folder": "Dossier"
+        },
+        "columns": {
+            "name": "Nom",
+            "size": "Taille",
+            "lastChanged": "Dernière modification",
+            "created": "Créé le"
+        },
+        "selected": "{count} sélectionné(s)",
+        "actions": {
+            "open": "Ouvrir",
+            "play": "Lire",
+            "delete": {
+                "button": "Supprimer",
+                "title": "Déplacer vers la corbeille",
+                "confirm": "Voulez-vous vraiment déplacer '{fileName}' vers la corbeille ?",
+                "descriptionSingle": "Voulez-vous vraiment déplacer <b>'{name}'</b> vers la corbeille ?",
+                "descriptionMultiple": "Voulez-vous vraiment déplacer <b>{count} éléments</b> vers la corbeille ?"
+            },
+            "deletePermanent": {
+                "button": "Supprimer définitivement",
+                "title": "Supprimer définitivement",
+                "confirm": "Voulez-vous vraiment supprimer définitivement '{fileName}' ? Cette action est irréversible.",
+                "descriptionSingle": "Voulez-vous vraiment <b>supprimer définitivement</b> <b>'{name}'</b> ? Cette action est irréversible.",
+                "descriptionMultiple": "Voulez-vous vraiment <b>supprimer définitivement</b> <b>{count} éléments</b> ? Cette action est irréversible."
+            },
+            "createFolder": {
+                "title": "Créer un nouveau dossier",
+                "description": "Veuillez saisir le nom du nouveau dossier.",
+                "placeholder": "Nom du dossier",
+                "button": "Créer le dossier"
+            },
+            "rename": {
+                "title": "Renommer",
+                "description": "Saisissez le nouveau nom de l'élément.",
+                "placeholder": "Nom",
+                "button": "Renommer"
+            },
+            "restore": "Restaurer",
+            "share": "Partager",
+            "favorite": "Ajouter aux favoris",
+            "unfavorite": "Retirer des favoris",
+            "move": "Déplacer",
+            "copy": "Copier",
+            "paste": "Coller",
+            "cut": "Couper",
+            "download": "Télécharger",
+            "view": "Afficher",
+            "edit": "Modifier"
+        },
+        "alerts": {
+            "createFolderFailed": "Échec de la création du dossier",
+            "renameFailed": "Échec du renommage",
+            "restoreFailed": "Échec de la restauration de(s) l'élément(s)",
+            "moveFailed": "Échec du déplacement du fichier"
+        }
+    },
+    "common": {
+        "cancel": "Annuler",
+        "save": "Enregistrer",
+        "name": "Nom",
+        "justNow": "À l'instant"
+    },
+    "quota": {
+        "title": "Quota",
+        "usedSpace": "Espace utilisé",
+        "availableSpace": "Espace disponible"
+    },
+    "audioPlayer": {
+        "preview": "Aperçu audio"
+    }
+}

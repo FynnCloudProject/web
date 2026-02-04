@@ -1,0 +1,35 @@
+{
+  "name": "fynncloud-ui",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/eslint": "^1.12.1",
+    "@nuxt/fonts": "^0.12.1",
+    "@nuxt/hints": "^1.0.0-alpha.5",
+    "@nuxt/icon": "^2.1.1",
+    "@nuxt/image": "^2.0.0",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/i18n": "^10.2.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@vueuse/core": "^14.1.0",
+    "eslint": "^9.39.2",
+    "mime-types": "^3.0.2",
+    "music-metadata": "^11.10.3",
+    "nuxt": "^4.2.2",
+    "tailwindcss": "^4.1.18",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/mime-types": "^3.0.1",
+    "@types/node": "^25.0.10",
+    "tailwind-corner-smoothing": "^1.2.0"
+  }
+}

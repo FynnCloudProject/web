@@ -1,0 +1,129 @@
+{
+    "auth": {
+        "login": {
+            "title": "Accedi",
+            "footer": "Non hai un account?",
+            "action": "Registrati",
+            "error": {
+                "invalidCredentials": "Credenziali non valide"
+            }
+        },
+        "register": {
+            "title": "Registrati",
+            "footer": "Hai già un account?",
+            "action": "Accedi",
+            "error": {
+                "usernameExists": "Nome utente già in uso",
+                "passwordMismatch": "Le password non corrispondono"
+            }
+        },
+        "username": "Nome utente",
+        "password": "Password",
+        "confirmPassword": "Conferma password"
+    },
+    "welcome": "Benvenuto",
+    "error": {
+        "title": "Errore",
+        "message": "Si è verificato un errore",
+        "serverUnreachable": "Server non raggiungibile",
+        "generic": "Si è verificato un errore",
+        "unknown": "Si è verificato un errore sconosciuto",
+        "auth": {
+            "register": {
+                "usernameTaken": "Nome utente già in uso",
+                "emailTaken": "Email già in uso",
+                "passwordsDoNotMatch": "Le password non corrispondono"
+            },
+            "login": {
+                "invalidCredentials": "Nome utente o password non validi"
+            }
+        }
+    },
+    "navigation": {
+        "allFiles": "Tutti i file",
+        "recentFiles": "File recenti",
+        "favoriteFiles": "Preferiti",
+        "sharedFiles": "Condivisi",
+        "settings": "Impostazioni",
+        "trash": "Cestino",
+        "logout": "Esci"
+    },
+    "files": {
+        "empty": "Nessun file trovato",
+        "dragAndDrop": "Trascina i file qui per caricarli",
+        "dragAndDropHint": "Trascina i file qui o crea una nuova cartella",
+        "upload": "Carica",
+        "newFolder": "Nuova cartella",
+        "type": {
+            "folder": "Cartella"
+        },
+        "columns": {
+            "name": "Nome",
+            "size": "Dimensione",
+            "lastChanged": "Ultima modifica",
+            "created": "Creato il"
+        },
+        "selected": "{count} selezionati",
+        "actions": {
+            "open": "Apri",
+            "play": "Riproduci",
+            "delete": {
+                "button": "Elimina",
+                "title": "Sposta nel cestino",
+                "confirm": "Sei sicuro di voler spostare '{fileName}' nel cestino?",
+                "descriptionSingle": "Sei sicuro di voler spostare <b>'{name}'</b> nel cestino?",
+                "descriptionMultiple": "Sei sicuro di voler spostare <b>{count} elementi</b> nel cestino?"
+            },
+            "deletePermanent": {
+                "button": "Elimina definitivamente",
+                "title": "Elimina definitivamente",
+                "confirm": "Sei sicuro di voler eliminare definitivamente '{fileName}'? L'azione non può essere annullata.",
+                "descriptionSingle": "Sei sicuro di voler <b>eliminare definitivamente</b> <b>'{name}'</b>? L'azione non può essere annullata.",
+                "descriptionMultiple": "Sei sicuro di voler <b>eliminare definitivamente</b> <b>{count} elementi</b>? L'azione non può essere annullata."
+            },
+            "createFolder": {
+                "title": "Crea nuova cartella",
+                "description": "Inserisci il nome per la nuova cartella.",
+                "placeholder": "Nome cartella",
+                "button": "Crea cartella"
+            },
+            "rename": {
+                "title": "Rinomina",
+                "description": "Inserisci il nuovo nome per l'elemento.",
+                "placeholder": "Nome",
+                "button": "Rinomina"
+            },
+            "restore": "Ripristina",
+            "share": "Condividi",
+            "favorite": "Aggiungi ai preferiti",
+            "unfavorite": "Rimuovi dai preferiti",
+            "move": "Sposta",
+            "copy": "Copia",
+            "paste": "Incolla",
+            "cut": "Taglia",
+            "download": "Scarica",
+            "view": "Visualizza",
+            "edit": "Modifica"
+        },
+        "alerts": {
+            "createFolderFailed": "Impossibile creare la cartella",
+            "renameFailed": "Rinomina fallita",
+            "restoreFailed": "Impossibile ripristinare gli elementi",
+            "moveFailed": "Impossibile spostare il file"
+        }
+    },
+    "common": {
+        "cancel": "Annulla",
+        "save": "Salva",
+        "name": "Nome",
+        "justNow": "Proprio ora"
+    },
+    "quota": {
+        "title": "Quota",
+        "usedSpace": "Spazio utilizzato",
+        "availableSpace": "Spazio disponibile"
+    },
+    "audioPlayer": {
+        "preview": "Anteprima audio"
+    }
+}

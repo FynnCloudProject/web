@@ -1,0 +1,176 @@
+{
+    "auth": {
+        "callback": {
+            "title": "Authentifizierung...",
+            "processing": "Anmelden...",
+            "error": {
+                "missingCode": "Autorisierungscode fehlt.",
+                "exchangeFailed": "Fehler beim Austausch des Autorisierungscodes."
+            }
+        },
+        "login": {
+            "title": "Anmelden",
+            "footer": "Noch kein Konto?",
+            "action": "Registrieren",
+            "error": {
+                "invalidCredentials": "Ungültiger Benutzername oder Passwort"
+            }
+        },
+        "register": {
+            "title": "Registrieren",
+            "footer": "Bereits ein Konto?",
+            "action": "Anmelden",
+            "error": {
+                "usernameExists": "Benutzername bereits vergeben",
+                "passwordMismatch": "Passwörter stimmen nicht überein",
+                "emailExists": "E-Mail-Adresse bereits vergeben"
+            }
+        },
+        "email": "E-Mail",
+        "username": "Benutzername",
+        "password": "Passwort",
+        "confirmPassword": "Passwort bestätigen",
+        "authorize": {
+            "title": "Zugriff genehmigen",
+            "description": "Die Anwendung <span class=\"font-semibold text-gray-900\">{client}</span> fordert Zugriff auf dein FynnCloud-Konto an. Stelle sicher, dass du <span class=\"text-white/70\">{client}</span> vertraust, bevor du fortfährst.",
+            "account": "Konto",
+            "permissions": "Berechtigungen",
+            "fullAccess": "Vollzugriff",
+            "action": "Autorisieren",
+            "success": "Autorisierung erfolgreich! Weiterleitung zur Anwendung...<br>Sie können diese Seite nun schliessen.",
+            "error": {
+                "missingParams": "Erforderliche Autorisierungsparameter fehlen.",
+                "invalidClientId": "Ungültige Client-ID.",
+                "invalidResponseType": "Ungültiger Antworttyp.",
+                "invalidCodeChallengeMethod": "Ungültige Code-Challenge-Methode."
+            }
+        }
+    },
+    "welcome": "Willkommen",
+    "error": {
+        "title": "Fehler",
+        "message": "Ein Fehler ist aufgetreten",
+        "serverUnreachable": "Server nicht erreichbar",
+        "generic": "Ein Fehler ist aufgetreten",
+        "unknown": "Ein unbekannter Fehler ist aufgetreten",
+        "auth": {
+            "register": {
+                "usernameTaken": "Benutzername ist bereits vergeben",
+                "emailTaken": "E-Mail-Adresse ist bereits vergeben",
+                "passwordsDoNotMatch": "Passwörter stimmen nicht überein"
+            },
+            "login": {
+                "invalidCredentials": "Ungültiger Benutzername oder Passwort"
+            }
+        }
+    },
+    "navigation": {
+        "allFiles": "Alle Dateien",
+        "recentFiles": "Zuletzt verwendet",
+        "favoriteFiles": "Favoriten",
+        "sharedFiles": "Geteilt",
+        "settings": "Einstellungen",
+        "trash": "Papierkorb",
+        "logout": "Abmelden"
+    },
+    "files": {
+        "empty": "Keine Dateien gefunden",
+        "dragAndDrop": "Dateien zum Hochladen hierher ziehen",
+        "dragAndDropHint": "Dateien hierher ziehen oder neuen Ordner erstellen",
+        "upload": "Hochladen",
+        "newFolder": "Neuer Ordner",
+        "type": {
+            "folder": "Ordner"
+        },
+        "columns": {
+            "title": "Spalten",
+            "name": "Name",
+            "size": "Grösse",
+            "lastChanged": "Zuletzt geändert",
+            "created": "Erstellt",
+            "deletedAt": "Gelöscht"
+        },
+        "selected": "{count} ausgewählt",
+        "actions": {
+            "open": "Öffnen",
+            "play": "Abspielen",
+            "delete": {
+                "button": "Löschen",
+                "title": "In den Papierkorb werfen",
+                "confirm": "Bist du sicher, dass du '{fileName}' in den Papierkorb werfen möchtest?",
+                "descriptionSingle": "Bist du sicher, dass du <b>'{name}'</b> in den Papierkorb werfen möchtest?",
+                "descriptionMultiple": "Bist du sicher, dass du <b>{count} Elemente</b> in den Papierkorb werfen möchtest?"
+            },
+            "deletePermanent": {
+                "button": "Endgültig löschen",
+                "title": "Endgültig löschen",
+                "confirm": "Bist du sicher, dass du '{fileName}' endgültig löschen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+                "descriptionSingle": "Bist du sicher, dass du <b>'{name}'</b> <b>endgültig löschen</b> möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden.",
+                "descriptionMultiple": "Bist du sicher, dass du <b>{count} Elemente</b> <b>endgültig löschen</b> möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
+            },
+            "createFolder": {
+                "title": "Neuen Ordner erstellen",
+                "description": "Bitte gib einen Namen für den neuen Ordner ein.",
+                "placeholder": "Ordnername",
+                "button": "Ordner erstellen"
+            },
+            "rename": {
+                "title": "Umbenennen",
+                "description": "Gib einen neuen Namen für das Element ein.",
+                "placeholder": "Name",
+                "button": "Umbenennen"
+            },
+            "restore": "Wiederherstellen",
+            "share": "Teilen",
+            "favorite": "Favorisieren",
+            "unfavorite": "Favorit entfernen",
+            "move": {
+                "fileTitle": "Datei verschieben | Dateien verschieben",
+                "folderTitle": "Ordner verschieben",
+                "description": "Wähle einen Ordner aus, in den du die Dateien verschieben möchtest.",
+                "button": "Verschieben"
+            },
+            "copy": "Kopieren",
+            "paste": "Einfügen",
+            "cut": "Ausschneiden",
+            "download": "Herunterladen",
+            "view": "Anzeigen",
+            "edit": "Bearbeiten"
+        },
+        "alerts": {
+            "createFolderFailed": "Ordner konnte nicht erstellt werden",
+            "renameFailed": "Umbenennen fehlgeschlagen",
+            "restoreFailed": "Wiederherstellen der Elemente fehlgeschlagen",
+            "moveFailed": "Verschieben der Datei fehlgeschlagen"
+        }
+    },
+    "common": {
+        "cancel": "Abbrechen",
+        "save": "Speichern",
+        "name": "Name",
+        "justNow": "Gerade eben"
+    },
+    "quota": {
+        "title": "Speicherplatz",
+        "usedSpace": "Belegter Speicher",
+        "availableSpace": "Verfügbarer Speicher"
+    },
+    "audioPlayer": {
+        "preview": "Audio-Vorschau"
+    },
+    "upload": {
+        "error": {
+            "quotaExceeded": "Speicherplatz voll. Nicht genügend Speicherplatz vorhanden.",
+            "nameConflict": "Eine Datei mit diesem Namen existiert bereits.",
+            "unauthorized": "Sitzung abgelaufen. Bitte erneut anmelden.",
+            "networkError": "Netzwerkverbindung unterbrochen.",
+            "unknown": "Ein unbekannter Fehler ist aufgetreten."
+        },
+        "state": {
+            "pending": "Warten...",
+            "uploading": "{progress}%",
+            "processing": "Verarbeiten...",
+            "completed": "Fertiggestellt"
+        }
+    }
+}

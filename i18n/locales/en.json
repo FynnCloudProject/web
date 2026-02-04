@@ -1,0 +1,181 @@
+{
+    "auth": {
+        "callback": {
+            "title": "Authenticating...",
+            "processing": "Logging in...",
+            "error": {
+                "missingCode": "Authorization code is missing.",
+                "exchangeFailed": "Failed to exchange authorization code."
+            }
+        },
+        "login": {
+            "title": "Sign in",
+            "footer": "Don't have an account?",
+            "action": "Sign up",
+            "error": {
+                "invalidCredentials": "Invalid credentials"
+            }
+        },
+        "register": {
+            "title": "Sign up",
+            "footer": "Already have an account?",
+            "action": "Sign in",
+            "error": {
+                "passwordMismatch": "Passwords do not match",
+                "usernameExists": "Username already exists",
+                "emailExists": "Email already exists"
+            }
+        },
+        "email": "Email",
+        "username": "Username",
+        "password": "Password",
+        "confirmPassword": "Confirm Password",
+        "authorize": {
+            "title": "Authorize Access",
+            "description": "The application <span class=\"font-semibold text-gray-900\">{client}</span> is requesting access to your FynnCloud account. Make sure you trust this application before proceeding.",
+            "account": "Account",
+            "permissions": "Permissions",
+            "scope": "Scope",
+            "fullAccess": "Full Access",
+            "action": "Authorize",
+            "continue": "Continue",
+            "alreadyAuthorized": "You have already authorized <span class=\"font-semibold text-gray-900\">{client}</span>. You can continue without re-approving.",
+            "success": "Authorization successful! Redirecting to application..You may close this window.",
+            "error": {
+                "missingParams": "Missing required authorization parameters.",
+                "invalidClientId": "Invalid client ID.",
+                "invalidResponseType": "Invalid response type.",
+                "invalidCodeChallengeMethod": "Invalid code challenge method."
+            }
+        }
+    },
+    "welcome": "Welcome",
+    "error": {
+        "serverUnreachable": "Server unreachable",
+        "networkError": "Network connection lost.",
+        "unknown": "An unknown error occurred.",
+        "unauthorized": "Session expired. Please login again.",
+        "forbidden": "You do not have permission to access this resource.",
+        "notFound": "The requested resource was not found.",
+        "generic": "An error occurred"
+    },
+    "navigation": {
+        "allFiles": "All Files",
+        "recentFiles": "Recent Files",
+        "favoriteFiles": "Favorites",
+        "sharedFiles": "Shared",
+        "settings": "Settings",
+        "trash": "Trash",
+        "logout": "Logout"
+    },
+    "files": {
+        "empty": "No files found",
+        "dragAndDrop": "Drag and drop files here to upload",
+        "dragAndDropHint": "Drag files here or create a new folder",
+        "upload": "Upload",
+        "newFolder": "New Folder",
+        "type": {
+            "folder": "Folder"
+        },
+        "drag": {
+            "multiple": "Multiple files"
+        },
+        "columns": {
+            "title": "Columns",
+            "name": "Name",
+            "size": "Size",
+            "lastChanged": "Last Changed",
+            "created": "Created",
+            "deletedAt": "Deleted At"
+        },
+        "selected": "{count} selected",
+        "actions": {
+            "open": "Open",
+            "play": "Play",
+            "delete": {
+                "button": "Delete",
+                "title": "Move to Recycle Bin",
+                "confirm": "Are you sure you want to move '{fileName}' to the recycle bin?",
+                "descriptionSingle": "Are you sure you want to move <b>'{name}'</b> to the recycle bin?",
+                "descriptionMultiple": "Are you sure you want to move <b>{count} items</b> to the recycle bin?"
+            },
+            "deletePermanent": {
+                "button": "Delete Permanently",
+                "title": "Delete Permanently",
+                "confirm": "Are you sure you want to permanently delete '{fileName}'? This action cannot be undone.",
+                "descriptionSingle": "Are you sure you want to <b>permanently delete</b> <b>'{name}'</b>? This action cannot be undone.",
+                "descriptionMultiple": "Are you sure you want to <b>permanently delete</b> <b>{count} items</b>? This action cannot be undone."
+            },
+            "createFolder": {
+                "title": "Create New Folder",
+                "description": "Please enter the name for the new folder.",
+                "placeholder": "Folder Name",
+                "button": "Create Folder"
+            },
+            "rename": {
+                "title": "Rename",
+                "description": "Enter the new name for the item.",
+                "placeholder": "Name",
+                "button": "Rename"
+            },
+            "restore": "Restore",
+            "share": "Share",
+            "favorite": "Favorite",
+            "unfavorite": "Unfavorite",
+            "move": {
+                "fileTitle": "Move file | Move files",
+                "folderTitle": "Move folder | Move folders",
+                "description": "Move files to another folder.",
+                "button": "Move"
+            },
+            "copy": "Copy",
+            "paste": "Paste",
+            "cut": "Cut",
+            "download": "Download",
+            "view": "View",
+            "edit": "Edit"
+        },
+        
+        "alerts": {
+            "createFolderFailed": "Failed to create folder",
+            "renameFailed": "Failed to rename",
+            "restoreFailed": "Failed to restore item(s)",
+            "moveFailed": "Failed to move file",
+            "moveSuccess": "Successfully moved items"
+        },
+        "move": {
+             "title": "Move Items",
+             "button": "Move Here",
+             "selectDestination": "Select destination folder"
+        }
+    },
+    "common": {
+        "cancel": "Cancel",
+        "save": "Save",
+        "name": "Name",
+        "justNow": "Just now"
+    },
+    "quota": {
+        "title": "Quota",
+        "usedSpace": "Used Space",
+        "availableSpace": "Available Space"
+    },
+    "audioPlayer": {
+        "preview": "Audio Preview"
+    },
+    "upload": {
+        "error": {
+        "quotaExceeded": "Quota exceeded. Not enough storage.",
+        "nameConflict": "A file with this name already exists.",
+        "unauthorized": "Session expired. Please login again.",
+        "networkError": "Network connection lost.",
+        "unknown": "An unknown error occurred."
+        },
+        "state": {
+        "pending": "Waiting...",
+        "uploading": "{progress}%",
+        "processing": "Processing...",
+        "completed": "Completed"
+        }
+    }
+}
