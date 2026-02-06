@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
-  ssr: false,
+  ssr: false ,
   components: [
     {
       path: '~/components',
@@ -12,6 +12,15 @@ export default defineNuxtConfig({
     }
   ],
 
+nitro: {
+  devProxy: {
+    '/api': {
+      target: 'http://localhost:8080/api',
+      changeOrigin: true,
+      secure: false,
+    },
+  },
+},
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',
@@ -21,15 +30,11 @@ export default defineNuxtConfig({
     '@nuxtjs/google-fonts',
     '@nuxtjs/i18n',
   ],
-
-
-
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE, 
     },  
   },
-
   i18n: {
     compilation: {
       strictMessage: false,
@@ -41,7 +46,6 @@ export default defineNuxtConfig({
       { code: 'it', language: 'it-IT', file: 'it.json' }
     ],
     strategy: 'no_prefix',
-
     defaultLocale: 'en',
     vueI18n: './i18n.config.ts',
     detectBrowserLanguage: {
