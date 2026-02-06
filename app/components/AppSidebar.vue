@@ -32,7 +32,7 @@ const { formattedUsage, percentage } = useQuota()
         </div>
         <div
           class="relative w-full bg-primary-950/40 rounded-full h-3 shadow-[inset_0_1px_3px_rgba(0,0,0,0.3)] border-b border-white/10">
-          <div
+          <div v-if="percentage >= 6"
             class="h-full rounded-full transition-all duration-500 ease-out bg-linear-to-b from-white to-gray-300 shadow-[inset_0_1px_1px_rgba(255,255,255,0.6),0_2px_4px_rgba(0,0,0,0.2)] border-t border-white/50"
             :style="{ width: `${percentage}%` }"></div>
         </div>
