@@ -82,19 +82,21 @@ const formatSpeed = (bytesPerSecond: number) => {
                        dark:bg-white/3 dark:hover:bg-white/5" @click="toggleMinimize">
                 <div class="flex items-center gap-3 min-w-0">
                     <!-- Animated icon -->
-                    <div class="relative w-9 h-9 rounded-xl flex items-center justify-center shrink-0
-                               bg-blue-500/8 dark:bg-blue-500/12">
+                    <div class="relative rounded-full flex items-center justify-center shrink-0" :class="isAllComplete
+                        ? 'p-1 bg-transparent'
+                        : 'p-1 bg-primary-500/8 dark:bg-primary-500/12'">
                         <div v-if="!isAllComplete"
-                            class="absolute inset-0 rounded-xl bg-blue-500/15 dark:bg-blue-500/20 animate-[icon-pulse_2s_ease-in-out_infinite]" />
+                            class="absolute inset-0 rounded-full bg-primary-500/15 dark:bg-primary-500/20 animate-[icon-pulse_2s_ease-in-out_infinite]" />
                         <Icon :name="isAllComplete ? 'heroicons:check-circle-solid' : 'heroicons:cloud-arrow-up-solid'"
-                            class="w-[18px] h-[18px] relative z-10 transition-transform duration-300"
-                            :class="isAllComplete ? 'text-emerald-500 dark:text-emerald-400' : 'text-blue-500 dark:text-blue-400'" />
+                            class="relative z-10 transition-transform duration-300" :class="isAllComplete
+                                ? 'text-emerald-500 dark:text-emerald-400 w-7 h-7'
+                                : 'text-primary-500 dark:text-primary-400 w-5 h-5'" />
                     </div>
                     <div class="min-w-0">
-                        <h3 class="font-semibold text-[13px] text-gray-900 dark:text-gray-100 leading-none mb-0.5">
+                        <h3 class="font-semibold text-sm text-gray-900 dark:text-gray-100 leading-none mb-0.5">
                             {{ isAllComplete ? 'Uploads complete' : 'Uploading files' }}
                         </h3>
-                        <p class="text-[11px] text-gray-500 dark:text-gray-400 leading-none tabular-nums">
+                        <p class="text-xs text-gray-500 dark:text-gray-400 leading-none tabular-nums">
                             {{ summaryText }}
                             <span v-if="!isAllComplete" class="text-gray-400 dark:text-gray-500">
                                 · {{ overallProgress }}%
@@ -153,11 +155,11 @@ const formatSpeed = (bytesPerSecond: number) => {
 
                                     <!-- Info -->
                                     <div class="min-w-0 flex-1">
-                                        <p class="text-[13px] font-medium text-gray-800 dark:text-gray-200 truncate leading-tight"
+                                        <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate leading-tight"
                                             :title="item.name">
                                             {{ item.name }}
                                         </p>
-                                        <p class="text-[11px] mt-0.5 leading-tight tabular-nums transition-colors duration-300"
+                                        <p class="text-[0.7rem] mt-0.5 leading-tight tabular-nums transition-colors duration-300"
                                             :class="{
                                                 'text-red-500 dark:text-red-400': item.status === 'error',
                                                 'text-emerald-600 dark:text-emerald-400': item.status === 'completed',
