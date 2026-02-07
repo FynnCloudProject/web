@@ -30,6 +30,7 @@ interface Props {
   textShadow?: boolean
 
   baseColor?: string
+  allowMini?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   variant: 'primary',
@@ -37,7 +38,8 @@ const props = withDefaults(defineProps<Props>(), {
   type: 'button',
   rounded: 'rounded-xl',
   fontWeight: 'font-medium',
-  textShadow: true
+  textShadow: true,
+  allowMini: false
 })
 
 const variantClasses = computed(() => {
@@ -158,9 +160,10 @@ const inlineGradientStyle = computed(() => {
         </path>
       </svg>
 
-      <span v-if="icon && !loading" :class="[icon, 'h-5 w-5']" />
+      <Icon v-if="icon && !loading" :name="icon" class="h-5 w-5" :class="textColor" />
 
-      <span class="font-sans tracking-tight" :class="[textSize, fontWeight]">
+      <span v-if="label || $slots.default" class="font-sans tracking-tight"
+        :class="[textSize, fontWeight, allowMini ? 'hidden sm:block' : '']">
         <slot>{{ label }}</slot>
       </span>
     </div>

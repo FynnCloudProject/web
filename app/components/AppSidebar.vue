@@ -2,13 +2,12 @@
 const { t } = useI18n()
 
 const links = computed(() => [
-  { label: t('navigation.allFiles'), icon: 'folder', to: '/' },
-  { label: t('navigation.recentFiles'), icon: 'clock', to: '/recent' },
-  { label: t('navigation.favoriteFiles'), icon: 'star', to: '/favorites' },
-  { label: t('navigation.sharedFiles'), icon: 'share', to: '/shared' },
+  { label: t('navigation.allFiles'), icon: 'heroicons:folder', to: '/' },
+  { label: t('navigation.recentFiles'), icon: 'heroicons:clock', to: '/recent' },
+  { label: t('navigation.favoriteFiles'), icon: 'heroicons:star', to: '/favorites' },
+  { label: t('navigation.sharedFiles'), icon: 'heroicons:share', to: '/shared' },
 ])
 
-const route = useRoute()
 const { formattedUsage, percentage } = useQuota()
 </script>
 
@@ -23,7 +22,8 @@ const { formattedUsage, percentage } = useQuota()
       <div class="grow">
       </div>
       <div class="px-2">
-        <AppSidebarItem :link="{ label: t('navigation.trash'), icon: 'trash', to: '/trash', variant: 'danger' }" />
+        <AppSidebarItem
+          :link="{ label: t('navigation.trash'), icon: 'heroicons:trash', to: '/trash', variant: 'danger' }" />
       </div>
       <div class="mt-4 mx-auto w-full px-4 mb-2 space-y-1">
         <div class="flex justify-between mx-1">

@@ -11,16 +11,19 @@ export default defineNuxtConfig({
       pathPrefix: false,
     }
   ],
-
-nitro: {
-  devProxy: {
-    '/api': {
-      target: 'http://localhost:8080/api',
-      changeOrigin: true,
-      secure: false,
+  icon: {
+    mode: 'css',
+    cssLayer: 'base'
+  },
+  nitro: {
+    devProxy: {
+      '/api': {
+        target: 'http://localhost:8080/api',
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
-},
   modules: [
     '@nuxt/eslint',
     '@nuxt/fonts',

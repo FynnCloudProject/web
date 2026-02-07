@@ -28,40 +28,24 @@ const { t } = useI18n()
 
             <div class="flex items-center gap-2">
                 <!-- Restore (Only in Trash) -->
-                <AppButton v-if="isTrash" variant="primary" rounded="rounded-lg" size="md" @click="emit('restore')">
+                <AppButton v-if="isTrash" variant="primary" rounded="rounded-lg" size="md" @click="emit('restore')"
+                    :allow-mini="true" icon="fluent:arrow-reset-32-filled">
                     <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24"
-                            stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round"
-                                d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
-                        </svg>
+
                         {{ t('files.actions.restore') }}
                     </div>
                 </AppButton>
 
                 <!-- Move (Hidden in Trash) -->
-                <AppButton v-if="!isTrash" variant="primary" rounded="rounded-lg" size="md" @click="emit('move')">
-                    <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="15 14 20 9 15 4" />
-                            <path d="M4 20v-7a4 4 0 0 1 4-4h12" />
-                        </svg>
-                        {{ t('files.actions.move.button') }}
-                    </div>
+                <AppButton v-if="!isTrash" variant="primary" rounded="rounded-lg" size="md" @click="emit('move')"
+                    :allow-mini="true" icon="lucide:arrow-right-left">
+                    {{ t('files.actions.move.button') }}
                 </AppButton>
 
                 <!-- Delete -->
-                <AppButton @click="emit('delete')" variant="danger" rounded="rounded-lg" size="md">
+                <AppButton @click="emit('delete')" variant="danger" rounded="rounded-lg" size="md" :allow-mini="true"
+                    icon="heroicons:trash">
                     <div class="flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                            <line x1="10" x2="10" y1="11" y2="17" />
-                            <line x1="14" x2="14" y1="11" y2="17" />
-                        </svg>
                         {{ isTrash ? t('files.actions.deletePermanent.button') : t('files.actions.delete.button') }}
                     </div>
                 </AppButton>
@@ -70,12 +54,7 @@ const { t } = useI18n()
 
                 <!-- Deselect (Circular) -->
                 <AppButton @click="emit('clearSelection')" variant="canvas" text-color="dark:text-white"
-                    rounded="rounded-full" size="md" class="h-10 w-10">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
+                    rounded="rounded-full" size="md" class="h-10 w-10" icon="heroicons:x-mark">
                 </AppButton>
             </div>
         </div>
