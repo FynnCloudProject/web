@@ -98,7 +98,7 @@ onMounted(() => {
 
 <template>
     <div ref="scrollContainer"
-        class="flex flex-row items-center text-sm space-x-1.5 overflow-x-scroll overflow-y-hidden scrollbar-hide px-1 pb-2 max-w-full">
+        class="flex flex-row items-center text-sm space-x-1.5 overflow-x-scroll overflow-y-hidden scrollbar-hide px-1 py-1 pb-2 max-w-full">
         <template v-for="(item, index) in items" :key="index">
             <!-- Separator -->
             <svg v-if="index > 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
@@ -107,7 +107,6 @@ onMounted(() => {
                     d="M16.28 11.47a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 0 1-1.06-1.06L14.69 12 7.72 5.03a.75.75 0 0 1 1.06-1.06l7.5 7.5Z"
                     clip-rule="evenodd" />
             </svg>
-
             <!-- Refactored Item -->
             <FileBreadcrumbItem :item="item" :to="getItemTo(item, index)" :index="index"
                 :is-last="items.length === index + 1 || (items.length === 1 && index === 0)"
