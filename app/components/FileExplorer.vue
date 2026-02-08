@@ -20,6 +20,7 @@ const { createFolder, deleteFiles, deleteFilesPermanently, renameFile, moveFile,
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
+const { toast } = useToast()
 
 // Composables
 const currentItems = computed(() => Array.isArray(props.items) ? props.items : [])
@@ -95,8 +96,10 @@ const handleCreateFolder = async () => {
   try {
     await createFolder(newFolderName.value, currentFolderID.value)
     showCreateFolderModal.value = false
-  } catch (e) {
-    alert(t('files.alerts.createFolderFailed'))
+  } catch (e: any) {
+    toast.error(
+      e?.data?.localizationKey ? t(e.data.localizationKey) : t('files.alerts.createFolderFailed')
+    )
   }
 }
 
@@ -118,7 +121,7 @@ const confirmDelete = async () => {
     clearSelection()
     showDeleteConfirm.value = false
   } catch (e) {
-    alert(t('files.alerts.deleteFailed'))
+    toast.error(t('files.alerts.deleteFailed'))
   } finally {
     isDeleting.value = false
     activeItems.value = []
@@ -143,7 +146,7 @@ const handleRename = async () => {
     await renameFile(item.id, fullName)
     showRenameModal.value = false
   } catch (e) {
-    alert(t('files.alerts.renameFailed'))
+    toast.error(t('files.alerts.renameFailed'))
   }
 }
 
@@ -154,7 +157,7 @@ const handleRestore = async (item?: FileItem) => {
     await Promise.all(targets.map(t => restoreFile(t.id)))
     clearSelection()
   } catch (e) {
-    alert(t('files.alerts.restoreFailed'))
+    toast.error(t('files.alerts.restoreFailed'))
   }
 }
 
@@ -165,7 +168,7 @@ const handleMoveFile = async (payload: { sourceIds: string[], targetId: string |
     await Promise.all(payload.sourceIds.map(id => moveFile(id, payload.targetId)))
     clearSelection()
   } catch (e) {
-    alert(t('files.alerts.moveFailed'))
+    toast.error(t('files.alerts.moveFailed'))
   }
 }
 
@@ -186,7 +189,7 @@ const handleDownloadFile = async (item: FileItem) => {
     link.click()
     document.body.removeChild(link)
   } catch (e) {
-    alert(t('files.alerts.downloadFailed'))
+    toast.error(t('files.alerts.downloadFailed'))
   }
 }
 
