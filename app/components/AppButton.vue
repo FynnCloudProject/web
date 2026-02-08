@@ -141,14 +141,13 @@ const inlineGradientStyle = computed(() => {
   <component :is="to ? 'NuxtLink' : 'button'" :to="to" :type="!to ? type : undefined" :disabled="loading"
     class="group relative inline-flex items-center justify-center transition-all duration-150 ease-out active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70 cursor-pointer"
     :class="[block ? 'flex w-full' : '', rounded, sizeClasses]">
-    <div v-if="variant !== 'ghost'" class="absolute inset-0 bg-gradient-to-b transition-all duration-150 ease-out"
-      :class="[
-        variantClasses,
-        rounded,
-        borderClass,
-        shadowClasses.normal,
-        `group-active:${shadowClasses.active}`
-      ]" :style="inlineGradientStyle"></div>
+    <div v-if="variant !== 'ghost'" class="absolute inset-0 bg-linear-to-b transition-all duration-150 ease-out" :class="[
+      variantClasses,
+      rounded,
+      borderClass,
+      shadowClasses.normal,
+      `group-active:${shadowClasses.active}`
+    ]" :style="inlineGradientStyle"></div>
 
     <div class="relative z-10 flex items-center justify-center gap-2 transition-transform duration-150 ease-out"
       :class="[textColor, textShadowClass]">
