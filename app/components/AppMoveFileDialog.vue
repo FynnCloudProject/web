@@ -28,7 +28,9 @@ const error = ref<string | null>(null)
 // Computed
 const canMoveHere = computed(() => {
     // Can't move into itself or children (simple check: if only one item and it matches current folder)
+    // Check that were not in same directory as the items we want to move
     if (props.items.some(item => item.id === currentFolderId.value)) return false
+    if (props.items.some(item => item.parent.id === currentFolderId.value)) return false
     return true
 })
 
@@ -54,12 +56,20 @@ const fetchFolders = async (parentId: string | null) => {
 
         // We only want folders
         folders.value = data.files.filter((f: any) => f.isDirectory).map((f: any) => ({
+            owner: {
+                id: f.owner.id,
+            },
+            parent: {
+                id: f.parent.id,
+            },
             id: f.id,
             name: f.filename,
             type: 'folder',
             sizeBytes: f.size,
+            lastModified: f.lastModified ? new Date(f.lastModified) : null,
             updatedAt: new Date(f.updatedAt),
             createdAt: new Date(f.createdAt),
+            deletedAt: f.deletedAt ? new Date(f.deletedAt) : null,
             isFavorite: f.isFavorite,
             isShared: f.isShared,
             isRecent: f.isRecent,
@@ -136,16 +146,12 @@ const close = () => {
 
 
                 <button v-for="folder in folders" :key="folder.id" @click="navigateTo(folder.id)"
-                    class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-neutral-800 transition-colors text-left group"
+                    class="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-primary-100 dark:hover:bg-neutral-800 transition-colors text-left group"
                     :class="{ 'opacity-50 cursor-not-allowed': props.items.some(i => i.id === folder.id) }"
                     :disabled="props.items.some(i => i.id === folder.id)">
-                    <div class="text-gray-400 group-hover:text-primary-500 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="fill-current">
-                            <path
-                                d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />
-                        </svg>
+                    <div class="flex items-center justify-center">
+                        <FileIcon :file-type="folder.type"
+                            class="text-gray-400! group-hover:text-primary-500! transition-colors!" />
                     </div>
                     <span class="text-sm text-gray-700 dark:text-gray-200 truncate font-medium">{{ folder.name }}</span>
                 </button>

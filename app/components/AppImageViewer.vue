@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { usePreview } from '~/composables/usePreview'
 import { ref, watch, onMounted, onUnmounted, computed } from 'vue'
-
 const { isVisible: isPreviewVisible, previewUrl, close, currentFile, isLoading, error, download, next, previous, hasNext, hasPrevious } = usePreview()
 
 const isVisible = computed(() => isPreviewVisible.value && currentFile.value?.type === 'image')
@@ -145,7 +144,7 @@ function handleKeydown(e: KeyboardEvent) {
                 <div class="flex min-h-full items-center justify-center relative">
                     <!-- Previous Button -->
                     <button v-if="hasPrevious" @click="previous" title="Previous Image"
-                        class=" absolute left-4 md:left-10 flex items-center justify-center p-2 rounded-full bg-white hover:bg-white/80 text-gray-900 shadow-xl backdrop-blur-sm transition-all pointer-events-auto z-70 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        class=" absolute left-4 md:left-10 flex items-center justify-center p-2 rounded-full bg-white dark:bg-neutral-800 hover:bg-white/80 dark:hover:bg-neutral-700 text-gray-900 dark:text-gray-100 shadow-xl backdrop-blur-sm transition-all pointer-events-auto z-70 focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-neutral-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-8 h-8 pr-1">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
@@ -153,28 +152,26 @@ function handleKeydown(e: KeyboardEvent) {
                     </button>
 
                     <div v-if="isVisible"
-                        class="relative w-full h-[85vh] max-w-6xl bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden pointer-events-auto">
+                        class="relative w-full h-[85vh] max-w-6xl bg-white dark:bg-neutral-900 rounded-lg shadow-2xl flex flex-col overflow-hidden pointer-events-auto">
                         <!-- Header -->
                         <div
-                            class="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50 shrink-0">
+                            class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-neutral-700 bg-gray-50 dark:bg-neutral-800 shrink-0">
                             <div class="flex items-center gap-2 overflow-hidden">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="size-6 text-purple-500 shrink-0">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
-                                </svg>
-                                <h3 class="font-medium text-gray-900 truncate">{{ currentFile?.name }}</h3>
+                                <FileIcon file-type="image" class="size-6" />
+
+                                <h3 class="font-medium text-gray-900 dark:text-gray-100 truncate">{{ currentFile?.name
+                                }}</h3>
                             </div>
                             <div class="flex items-center gap-2">
 
                                 <button @click="resetZoom" title="Reset Zoom"
                                     v-if="scale !== 1 || translateX !== 0 || translateY !== 0"
-                                    class="text-xs px-2 py-1 rounded bg-gray-100 hover:bg-gray-200 text-gray-600 font-medium transition-colors">
+                                    class="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-neutral-700 hover:bg-gray-200 dark:hover:bg-neutral-600 text-gray-600 dark:text-gray-300 font-medium transition-colors">
                                     Reset
                                 </button>
                                 <!-- Zoom Controls -->
                                 <button @click="zoomOut" title="Zoom Out"
-                                    class="p-1.5 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                                    class="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         class="size-5">
                                         <path fill-rule="evenodd"
@@ -182,10 +179,11 @@ function handleKeydown(e: KeyboardEvent) {
                                             clip-rule="evenodd" />
                                     </svg>
                                 </button>
-                                <span class="text-xs font-medium text-gray-500 min-w-[3ch] text-center">{{
-                                    Math.round(scale * 100) }}%</span>
+                                <span
+                                    class="text-xs font-medium text-gray-500 dark:text-gray-400 min-w-[3ch] text-center">{{
+                                        Math.round(scale * 100) }}%</span>
                                 <button @click="zoomIn" title="Zoom In"
-                                    class="p-1.5 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                                    class="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         class="size-5">
                                         <path
@@ -193,10 +191,10 @@ function handleKeydown(e: KeyboardEvent) {
                                     </svg>
                                 </button>
 
-                                <div class="w-px h-6 bg-gray-200 mx-1"></div>
+                                <div class="w-px h-6 bg-gray-200 dark:bg-neutral-700 mx-1"></div>
 
                                 <button @click="download" title="Download Image"
-                                    class="p-1.5 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                                    class="p-1.5 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
                                     <svg class="size-4" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                         stroke-linecap="round" stroke-linejoin="round">
@@ -206,7 +204,7 @@ function handleKeydown(e: KeyboardEvent) {
                                     </svg>
                                 </button>
                                 <button @click="close"
-                                    class="p-1 rounded-full text-gray-500 hover:text-gray-700 hover:bg-gray-200 transition-colors cursor-pointer">
+                                    class="p-1 rounded-full text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
                                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
                                         class="size-5">
                                         <path
@@ -217,14 +215,14 @@ function handleKeydown(e: KeyboardEvent) {
                         </div>
 
                         <!-- Content -->
-                        <div class="flex-1 relative bg-gray-100 flex items-center justify-center overflow-hidden select-none"
+                        <div class="flex-1 relative bg-gray-100 dark:bg-neutral-950 flex items-center justify-center overflow-hidden select-none"
                             @wheel="handleWheel" @mousedown="startDrag" @mousemove="onDrag" @mouseup="stopDrag"
                             @mouseleave="stopDrag" @touchstart="startDrag" @touchmove="onDrag" @touchend="stopDrag">
                             <div v-if="isLoading" class="flex flex-col items-center gap-3">
                                 <div
-                                    class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 border-t-purple-500">
+                                    class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 dark:border-neutral-700 border-t-purple-500">
                                 </div>
-                                <p class="text-gray-500 font-medium">Loading Image...</p>
+                                <p class="text-gray-500 dark:text-gray-400 font-medium">Loading Image...</p>
                             </div>
 
                             <div v-else-if="error" class="text-center p-6 max-w-md">
@@ -233,10 +231,10 @@ function handleKeydown(e: KeyboardEvent) {
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
                                 </svg>
-                                <p class="text-gray-900 font-medium mb-1">Unable to load Image</p>
-                                <p class="text-gray-500 text-sm">{{ error }}</p>
+                                <p class="text-gray-900 dark:text-gray-100 font-medium mb-1">Unable to load Image</p>
+                                <p class="text-gray-500 dark:text-gray-400 text-sm">{{ error }}</p>
                                 <button @click="close"
-                                    class="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded text-sm font-medium transition-colors">
+                                    class="mt-4 px-4 py-2 bg-gray-200 dark:bg-neutral-700 hover:bg-gray-300 dark:hover:bg-neutral-600 rounded text-sm font-medium transition-colors">
                                     Close
                                 </button>
                             </div>
@@ -249,7 +247,7 @@ function handleKeydown(e: KeyboardEvent) {
                         </div>
                     </div>
                     <button v-if="hasNext" @click="next" title="Next Image"
-                        class="absolute right-4 md:right-10 flex items-center justify-center p-2 rounded-full bg-white hover:bg-white/80 text-gray-900 shadow-xl backdrop-blur-sm transition-all pointer-events-auto z-70 focus:outline-none focus:ring-2 focus:ring-white/50">
+                        class="absolute right-4 md:right-10 flex items-center justify-center p-2 rounded-full bg-white dark:bg-neutral-800 hover:bg-white/80 dark:hover:bg-neutral-700 text-gray-900 dark:text-gray-100 shadow-xl backdrop-blur-sm transition-all pointer-events-auto z-70 focus:outline-none focus:ring-2 focus:ring-white/50 dark:focus:ring-neutral-600">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2"
                             stroke="currentColor" class="w-8 h-8 pl-1">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
