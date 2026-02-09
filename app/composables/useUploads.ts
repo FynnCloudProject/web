@@ -21,7 +21,7 @@ const ERROR_MAP: Record<number, string> = {
 
 const CHUNKED_UPLOAD_THRESHOLD = 30 * 1024 * 1024;
 const MAX_RETRIES = 3;
-const MAX_CONCURRENT_CHUNKS = 6;
+const MAX_CONCURRENT_CHUNKS = 5;
 
 export const useUploads = () => {
   const uploads = useState("uploads", () => [] as UploadItem[]);
