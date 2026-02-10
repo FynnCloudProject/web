@@ -13,15 +13,14 @@ const { formattedUsage, percentage } = useQuota()
 
 <template>
   <div class="h-full">
-    <div
-      class="h-full bg-primary-700 dark:bg-primary-800 dark:border-r dark:border-primary-800 shadow-lg pb-2 flex flex-col justify-between">
+    <div class="h-full bg-primary-700 dark:bg-primary-800 shadow-lg pb-2 flex flex-col justify-between">
       <nav class="space-y-1 p-2">
         <AppSidebarItem v-for="link in links" :key="link.to" :link="link" />
-
       </nav>
       <div class="grow">
       </div>
-      <div class="px-2">
+      <div class="px-2 space-y-1">
+        <AppSidebarItem :link="{ label: t('admin.title'), icon: 'heroicons:cog-6-tooth', to: '/admin' }" />
         <AppSidebarItem
           :link="{ label: t('navigation.trash'), icon: 'heroicons:trash', to: '/trash', variant: 'danger' }" />
       </div>

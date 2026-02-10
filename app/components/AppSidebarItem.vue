@@ -10,6 +10,7 @@ defineProps<{
   link: SidebarLink
 }>()
 
+
 const route = useRoute()
 </script>
 
