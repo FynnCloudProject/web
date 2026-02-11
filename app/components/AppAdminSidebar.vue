@@ -2,9 +2,13 @@
 const { t } = useI18n()
 
 const links = computed(() => [
-    { label: t('admin.overview'), icon: 'heroicons:chart-bar-square', to: '/admin' },
-    { label: t('admin.users'), icon: 'heroicons:users', to: '/admin/users' },
-    { label: t('admin.settings'), icon: 'heroicons:cog-6-tooth', to: '/admin/settings' },
+    {
+        label: t('admin.overview'), icon: 'duo-icons:dashboard', to: '/admin'
+    },
+    {
+        label: t('admin.users'), icon: 'heroicons:users-16-solid', to: '/admin/users'
+    },
+    { label: t('admin.settings'), icon: 'heroicons:cog-6-tooth-solid', to: '/admin/settings' },
 ])
 </script>
 
