@@ -1,30 +1,30 @@
 {
     "auth": {
+        "error": {
+            "credentials": "Ungültiger Benutzername oder Passwort",
+            "userExists": "Benutzername bereits vergeben",
+            "emailExists": "E-Mail-Adresse bereits vergeben",
+            "passwordMismatch": "Passwörter stimmen nicht überein",
+            "missingParams": "Erforderliche Autorisierungsparameter fehlen.",
+            "invalidClientId": "Ungültige Client-ID.",
+            "invalidResponseType": "Ungültiger Antworttyp.",
+            "invalidCodeChallengeMethod": "Ungültige Code-Challenge-Methode.",
+            "exchangeFailed": "Fehler beim Austausch des Autorisierungscodes.",
+            "missingCode": "Autorisierungscode fehlt."
+        },
         "callback": {
             "title": "Authentifizierung...",
-            "processing": "Anmelden...",
-            "error": {
-                "missingCode": "Autorisierungscode fehlt.",
-                "exchangeFailed": "Fehler beim Austausch des Autorisierungscodes."
-            }
+            "processing": "Anmelden..."
         },
         "login": {
             "title": "Anmelden",
             "footer": "Noch kein Konto?",
-            "action": "Registrieren",
-            "error": {
-                "invalidCredentials": "Ungültiger Benutzername oder Passwort"
-            }
+            "action": "Registrieren"
         },
         "register": {
             "title": "Registrieren",
             "footer": "Bereits ein Konto?",
-            "action": "Anmelden",
-            "error": {
-                "usernameExists": "Benutzername bereits vergeben",
-                "passwordMismatch": "Passwörter stimmen nicht überein",
-                "emailExists": "E-Mail-Adresse bereits vergeben"
-            }
+            "action": "Anmelden"
         },
         "email": "E-Mail",
         "username": "Benutzername",
@@ -40,13 +40,7 @@
             "action": "Autorisieren",
             "continue": "Weiter",
             "alreadyAuthorized": "Du hast <span class=\"font-semibold text-gray-900\">{client}</span> bereits autorisiert. Du kannst ohne erneute Genehmigung fortfahren.",
-            "success": "Autorisierung erfolgreich! Weiterleitung zur Anwendung...<br>Sie können dieses Fenster nun schliessen.",
-            "error": {
-                "missingParams": "Erforderliche Autorisierungsparameter fehlen.",
-                "invalidClientId": "Ungültige Client-ID.",
-                "invalidResponseType": "Ungültiger Antworttyp.",
-                "invalidCodeChallengeMethod": "Ungültige Code-Challenge-Methode."
-            }
+            "success": "Autorisierung erfolgreich! Weiterleitung zur Anwendung...<br>Sie können dieses Fenster nun schliessen."
         }
     },
     "welcome": "Willkommen",
@@ -57,7 +51,8 @@
         "unauthorized": "Sitzung abgelaufen. Bitte erneut anmelden.",
         "forbidden": "Du hast keine Berechtigung, auf diese Ressource zuzugreifen.",
         "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
-        "generic": "Ein Fehler ist aufgetreten"
+        "generic": "Ein Fehler ist aufgetreten",
+        "invalidRequest": "Ungültige Anfrage"
     },
     "navigation": {
         "allFiles": "Alle Dateien",
@@ -69,6 +64,14 @@
         "logout": "Abmelden"
     },
     "files": {
+        "error": {
+            "restoreFailed": "Wiederherstellen fehlgeschlagen",
+            "uploadFailed": "Hochladen fehlgeschlagen",
+            "quotaExceeded": "Speicherplatz voll. Nicht genügend Speicherplatz vorhanden.",
+            "nameConflict": "Eine Datei mit diesem Namen existiert bereits.",
+            "deleteFailed": "Löschen fehlgeschlagen",
+            "downloadFailed": "Herunterladen fehlgeschlagen"
+        },
         "empty": "Keine Dateien gefunden",
         "dragAndDrop": "Dateien zum Hochladen hierher ziehen",
         "dragAndDropHint": "Dateien hierher ziehen oder neuen Ordner erstellen",
@@ -138,7 +141,6 @@
         "alerts": {
             "createFolderFailed": "Ordner konnte nicht erstellt werden",
             "renameFailed": "Umbenennen fehlgeschlagen",
-            "restoreFailed": "Wiederherstellen fehlgeschlagen",
             "moveFailed": "Verschieben fehlgeschlagen",
             "moveSuccess": "Elemente erfolgreich verschoben"
         },
@@ -154,9 +156,10 @@
         "name": "Name",
         "justNow": "Gerade eben",
         "error": "Fehler",
-        "success": "Erfolg",
+        "success": "Vorgang erfolgreich",
         "warning": "Warnung",
-        "info": "Info"
+        "info": "Info",
+        "loading": "Lade"
     },
     "quota": {
         "title": "Speicherplatz",
@@ -167,13 +170,6 @@
         "preview": "Audio-Vorschau"
     },
     "upload": {
-        "error": {
-            "quotaExceeded": "Speicherplatz voll. Nicht genügend Speicherplatz vorhanden.",
-            "nameConflict": "Eine Datei mit diesem Namen existiert bereits.",
-            "unauthorized": "Sitzung abgelaufen. Bitte erneut anmelden.",
-            "networkError": "Netzwerkverbindung unterbrochen.",
-            "unknown": "Ein unbekannter Fehler ist aufgetreten."
-        },
         "state": {
             "pending": "Warten...",
             "uploading": "{progress}%",
@@ -208,6 +204,24 @@
             "ldapDisabled": "LDAP-Authentifizierung ist nicht aktiviert.",
             "appNameDefault": "App-Name ist 'FynnCloud'. Setze APP_NAME zum Anpassen.",
             "httpNotHttps": "HTTP wird nicht empfohlen. Verwende HTTPS."
+        },
+        "userManagement": {
+            "userSingular": "Benutzer",
+            "userPlural": "Benutzer",
+            "groups": "Gruppen",
+            "storage": "Speicher",
+            "noGroups": "Keine Gruppen gefunden",
+            "noUsers": "Keine Benutzer gefunden",
+            "fetchError": "Benutzer konnten nicht geladen werden",
+            "deleteUser": "Benutzer löschen",
+            "deleteConfirm": "Möchtest du <b>{name}</b> wirklich endgültig löschen? Alle Dateien werden entfernt.",
+            "deleteConfirmShort": "{name} und alle Dateien löschen?",
+            "setTier": "Speicherplan setzen",
+            "setTierDescription": "Wähle einen Speicherplan für {name}.",
+            "noTier": "Kein Plan (Gruppenstandard)",
+            "manageGroups": "Gruppen verwalten",
+            "manageGroupsDescription": "Gruppenmitgliedschaft für {name} bearbeiten.",
+            "searchGroups": "Verfügbare Gruppen suchen..."
         }
     }
 }

@@ -1,30 +1,30 @@
 {
     "auth": {
+        "error": {
+            "credentials": "Credenziali non valide",
+            "userExists": "Nome utente già in uso",
+            "emailExists": "Email già registrata",
+            "passwordMismatch": "Le password non corrispondono",
+            "missingParams": "Parametri di autorizzazione richiesti mancanti.",
+            "invalidClientId": "ID client non valido.",
+            "invalidResponseType": "Tipo di risposta non valido.",
+            "invalidCodeChallengeMethod": "Metodo code challenge non valido.",
+            "exchangeFailed": "Scambio del codice di autorizzazione fallito.",
+            "missingCode": "Codice di autorizzazione mancante."
+        },
         "callback": {
             "title": "Autenticazione...",
-            "processing": "Accesso in corso...",
-            "error": {
-                "missingCode": "Codice di autorizzazione mancante.",
-                "exchangeFailed": "Scambio del codice di autorizzazione fallito."
-            }
+            "processing": "Accesso in corso..."
         },
         "login": {
             "title": "Accedi",
             "footer": "Non hai un account?",
-            "action": "Registrati",
-            "error": {
-                "invalidCredentials": "Credenziali non valide"
-            }
+            "action": "Registrati"
         },
         "register": {
             "title": "Registrati",
             "footer": "Hai già un account?",
-            "action": "Accedi",
-            "error": {
-                "passwordMismatch": "Le password non corrispondono",
-                "usernameExists": "Nome utente già in uso",
-                "emailExists": "Email già registrata"
-            }
+            "action": "Accedi"
         },
         "email": "Email",
         "username": "Nome utente",
@@ -40,13 +40,7 @@
             "action": "Autorizza",
             "continue": "Continua",
             "alreadyAuthorized": "Hai già autorizzato <span class=\"font-semibold text-gray-900\">{client}</span>. Puoi continuare senza riapprovare.",
-            "success": "Autorizzazione riuscita! Reindirizzamento all'applicazione...<br>Ora puoi chiudere questa finestra.",
-            "error": {
-                "missingParams": "Parametri di autorizzazione richiesti mancanti.",
-                "invalidClientId": "ID client non valido.",
-                "invalidResponseType": "Tipo di risposta non valido.",
-                "invalidCodeChallengeMethod": "Metodo code challenge non valido."
-            }
+            "success": "Autorizzazione riuscita! Reindirizzamento all'applicazione...<br>Ora puoi chiudere questa finestra."
         }
     },
     "welcome": "Benvenuto",
@@ -57,7 +51,8 @@
         "unauthorized": "Sessione scaduta. Per favore accedi di nuovo.",
         "forbidden": "Non hai il permesso di accedere a questa risorsa.",
         "notFound": "La risorsa richiesta non è stata trovata.",
-        "generic": "Si è verificato un errore"
+        "generic": "Si è verificato un errore",
+        "invalidRequest": "Richiesta non valida"
     },
     "navigation": {
         "allFiles": "Tutti i file",
@@ -69,6 +64,14 @@
         "logout": "Esci"
     },
     "files": {
+        "error": {
+            "restoreFailed": "Impossibile ripristinare gli elementi",
+            "uploadFailed": "Caricamento fallito",
+            "quotaExceeded": "Quota superata. Spazio di archiviazione insufficiente.",
+            "nameConflict": "Un file con questo nome esiste già.",
+            "deleteFailed": "Eliminazione fallita",
+            "downloadFailed": "Download fallito"
+        },
         "empty": "Nessun file trovato",
         "dragAndDrop": "Trascina i file qui per caricarli",
         "dragAndDropHint": "Trascina i file qui o crea una nuova cartella",
@@ -138,7 +141,6 @@
         "alerts": {
             "createFolderFailed": "Impossibile creare la cartella",
             "renameFailed": "Rinomina fallita",
-            "restoreFailed": "Impossibile ripristinare gli elementi",
             "moveFailed": "Impossibile spostare il file",
             "moveSuccess": "Elementi spostati con successo"
         },
@@ -156,7 +158,8 @@
         "error": "Errore",
         "success": "Successo",
         "warning": "Avviso",
-        "info": "Info"
+        "info": "Info",
+        "loading": "Caricamento"
     },
     "quota": {
         "title": "Quota",
@@ -167,13 +170,6 @@
         "preview": "Anteprima audio"
     },
     "upload": {
-        "error": {
-            "quotaExceeded": "Quota superata. Spazio di archiviazione insufficiente.",
-            "nameConflict": "Un file con questo nome esiste già.",
-            "unauthorized": "Sessione scaduta. Per favore accedi di nuovo.",
-            "networkError": "Connessione di rete persa.",
-            "unknown": "Si è verificato un errore sconosciuto."
-        },
         "state": {
             "pending": "In attesa...",
             "uploading": "{progress}%",
@@ -208,6 +204,24 @@
             "ldapDisabled": "Autenticazione LDAP non abilitata.",
             "appNameDefault": "Il nome app è 'FynnCloud'. Imposta APP_NAME per personalizzare.",
             "httpNotHttps": "HTTP non è raccomandato. Considera l'utilizzo di HTTPS."
+        },
+        "userManagement": {
+            "userSingular": "utente",
+            "userPlural": "utenti",
+            "groups": "Gruppi",
+            "storage": "Archiviazione",
+            "noGroups": "Nessun gruppo trovato",
+            "noUsers": "Nessun utente trovato",
+            "fetchError": "Impossibile caricare gli utenti",
+            "deleteUser": "Elimina utente",
+            "deleteConfirm": "Vuoi davvero eliminare <b>{name}</b> definitivamente? Tutti i file verranno rimossi.",
+            "deleteConfirmShort": "Eliminare {name} e tutti i file?",
+            "setTier": "Imposta piano",
+            "setTierDescription": "Scegli un piano di archiviazione per {name}.",
+            "noTier": "Nessun piano (predefinito del gruppo)",
+            "manageGroups": "Gestisci gruppi",
+            "manageGroupsDescription": "Modifica l'appartenenza ai gruppi di {name}.",
+            "searchGroups": "Cerca gruppi disponibili..."
         }
     }
 }

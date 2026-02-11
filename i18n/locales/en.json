@@ -1,30 +1,30 @@
 {
     "auth": {
+        "error": {
+            "credentials": "Invalid credentials",
+            "userExists": "Username already exists",
+            "emailExists": "Email already exists",
+            "passwordMismatch": "Passwords do not match",
+            "missingParams": "Missing required authorization parameters.",
+            "invalidClientId": "Invalid client ID.",
+            "invalidResponseType": "Invalid response type.",
+            "invalidCodeChallengeMethod": "Invalid code challenge method.",
+            "exchangeFailed": "Failed to exchange authorization code.",
+            "missingCode": "Authorization code is missing."
+        },
         "callback": {
             "title": "Authenticating...",
-            "processing": "Logging in...",
-            "error": {
-                "missingCode": "Authorization code is missing.",
-                "exchangeFailed": "Failed to exchange authorization code."
-            }
+            "processing": "Logging in..."
         },
         "login": {
             "title": "Sign in",
             "footer": "Don't have an account?",
-            "action": "Sign up",
-            "error": {
-                "invalidCredentials": "Invalid credentials"
-            }
+            "action": "Sign up"
         },
         "register": {
             "title": "Sign up",
             "footer": "Already have an account?",
-            "action": "Sign in",
-            "error": {
-                "passwordMismatch": "Passwords do not match",
-                "usernameExists": "Username already exists",
-                "emailExists": "Email already exists"
-            }
+            "action": "Sign in"
         },
         "email": "Email",
         "username": "Username",
@@ -40,13 +40,7 @@
             "action": "Authorize",
             "continue": "Continue",
             "alreadyAuthorized": "You have already authorized <span class=\"font-semibold text-gray-900\">{client}</span>. You can continue without re-approving.",
-            "success": "Authorization successful! Redirecting to application...<br>You may close this window.",
-            "error": {
-                "missingParams": "Missing required authorization parameters.",
-                "invalidClientId": "Invalid client ID.",
-                "invalidResponseType": "Invalid response type.",
-                "invalidCodeChallengeMethod": "Invalid code challenge method."
-            }
+            "success": "Authorization successful! Redirecting to application...<br>You may close this window."
         }
     },
     "welcome": "Welcome",
@@ -57,7 +51,8 @@
         "unauthorized": "Session expired. Please login again.",
         "forbidden": "You do not have permission to access this resource.",
         "notFound": "The requested resource was not found.",
-        "generic": "An error occurred"
+        "generic": "An error occurred",
+        "invalidRequest": "Invalid request"
     },
     "navigation": {
         "allFiles": "All Files",
@@ -69,6 +64,14 @@
         "logout": "Logout"
     },
     "files": {
+        "error": {
+            "restoreFailed": "Failed to restore item(s)",
+            "uploadFailed": "Upload failed",
+            "quotaExceeded": "Quota exceeded. Not enough storage.",
+            "nameConflict": "A file with this name already exists.",
+            "deleteFailed": "Failed to delete item(s)",
+            "downloadFailed": "Download failed"
+        },
         "empty": "No files found",
         "dragAndDrop": "Drag and drop files here to upload",
         "dragAndDropHint": "Drag files here or create a new folder",
@@ -135,11 +138,9 @@
             "view": "View",
             "edit": "Edit"
         },
-        
         "alerts": {
             "createFolderFailed": "Failed to create folder",
             "renameFailed": "Failed to rename",
-            "restoreFailed": "Failed to restore item(s)",
             "moveFailed": "Failed to move file",
             "moveSuccess": "Successfully moved items"
         },
@@ -157,7 +158,8 @@
         "error": "Error",
         "success": "Success",
         "warning": "Warning",
-        "info": "Info"
+        "info": "Info",
+        "loading": "Loading"
     },
     "quota": {
         "title": "Quota",
@@ -168,18 +170,11 @@
         "preview": "Audio Preview"
     },
     "upload": {
-        "error": {
-        "quotaExceeded": "Quota exceeded. Not enough storage.",
-        "nameConflict": "A file with this name already exists.",
-        "unauthorized": "Session expired. Please login again.",
-        "networkError": "Network connection lost.",
-        "unknown": "An unknown error occurred."
-        },
         "state": {
-        "pending": "Waiting...",
-        "uploading": "{progress}%",
-        "processing": "Processing...",
-        "completed": "Completed"
+            "pending": "Waiting...",
+            "uploading": "{progress}%",
+            "processing": "Processing...",
+            "completed": "Completed"
         }
     },
     "admin": {
@@ -209,6 +204,24 @@
             "ldapDisabled": "LDAP authentication is not enabled.",
             "appNameDefault": "App name is using the default value 'FynnCloud'. Set APP_NAME to customize.",
             "httpNotHttps": "HTTP is not recommended for production. Consider using HTTPS."
+        },
+        "userManagement": {
+            "userSingular": "user",
+            "userPlural": "users",
+            "groups": "Groups",
+            "storage": "Storage",
+            "noGroups": "No groups found",
+            "noUsers": "No users found",
+            "fetchError": "Failed to load users",
+            "deleteUser": "Delete User",
+            "deleteConfirm": "Are you sure you want to permanently delete <b>{name}</b>? All their files will be removed.",
+            "deleteConfirmShort": "Delete {name} and all their files?",
+            "setTier": "Set Tier",
+            "setTierDescription": "Choose a storage tier for {name}.",
+            "noTier": "No tier (use group default)",
+            "manageGroups": "Manage Groups",
+            "manageGroupsDescription": "Toggle group membership for {name}.",
+            "searchGroups": "Search available groups..."
         }
     }
 }
