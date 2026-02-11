@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { useApiBase } from '~/composables/useApiBase'
 
 definePageMeta({
     layout: 'auth'
@@ -53,9 +52,8 @@ if (codeChallengeMethod !== "S256") {
 
 const authorize = async () => {
     loading.value = true
-    const apiBase = useApiBase()
     try {
-        const { callbackURL } = await $fetch<{ callbackURL: string }>(`${apiBase}/api/auth/authorize`, {
+        const { callbackURL } = await useApi<{ callbackURL: string }>(`/api/auth/authorize`, {
             method: 'POST',
             body: {
                 clientId,
