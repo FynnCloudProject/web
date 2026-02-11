@@ -26,8 +26,9 @@ const handleLogout = async () => {
                     </svg>
                 </button>
                 <NuxtLink to="/" class="flex items-center gap-2 text-3xl font-extralight text-primary-600">
-                    {{ appName }}
+                    <AppLogo />
                 </NuxtLink>
+
             </div>
 
             <div class="flex items-center gap-4">
@@ -37,7 +38,7 @@ const handleLogout = async () => {
                 <div class="flex items-center gap-3">
                     <LanguageSwitcher />
                     <ThemeSwitcher />
-                    <!-- User Profile Icon -->
+
                     <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
                             <path fill-rule="evenodd"
