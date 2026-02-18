@@ -85,96 +85,112 @@ export const useUploads = () => {
     url.searchParams.append("lastModified", file.lastModified.toString());
 
     return new Promise<void>((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", url.toString(), true);
-      xhr.setRequestHeader(
-        "Content-Type",
-        file.type || "application/octet-stream",
-      );
+      const startXhr = (isRetry = false) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", url.toString(), true);
+        xhr.setRequestHeader(
+          "Content-Type",
+          file.type || "application/octet-stream",
+        );
 
-      let lastUpdate = 0;
-      let lastLoaded = 0;
-      let lastSpeedUpdate = 0;
-      const THROTTLE_MS = 80;
+        let lastUpdate = 0;
+        let lastLoaded = 0;
+        let lastSpeedUpdate = 0;
+        const THROTTLE_MS = 80;
 
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          const now = Date.now();
-          const progress = Math.round((e.loaded * 100) / e.total);
+        xhr.upload.onprogress = (e) => {
+          if (e.lengthComputable) {
+            const now = Date.now();
+            const progress = Math.round((e.loaded * 100) / e.total);
 
-          const timeDiff = now - lastSpeedUpdate;
-          if (timeDiff > 500) {
-            const loadedDiff = e.loaded - lastLoaded;
-            const speed = (loadedDiff / timeDiff) * 1000; // bytes per second
-            lastLoaded = e.loaded;
-            lastSpeedUpdate = now;
+            const timeDiff = now - lastSpeedUpdate;
+            if (timeDiff > 500) {
+              const loadedDiff = e.loaded - lastLoaded;
+              const speed = (loadedDiff / timeDiff) * 1000; // bytes per second
+              lastLoaded = e.loaded;
+              lastSpeedUpdate = now;
 
-            const current = uploads.value.find(
-              (u: { id: string }) => u.id === id,
+              const current = uploads.value.find(
+                (u: { id: string }) => u.id === id,
+              );
+              if (current) {
+                updateUpload(id, { speed });
+              }
+            }
+
+            if (now - lastUpdate > THROTTLE_MS || progress === 100) {
+              lastUpdate = now;
+              const current = uploads.value.find(
+                (u: { id: string }) => u.id === id,
+              );
+              if (current && current.status !== "error") {
+                updateUpload(id, {
+                  progress,
+                  status: progress >= 100 ? "processing" : "uploading",
+                });
+              }
+            }
+          }
+        };
+
+        xhr.onload = async () => {
+          if (xhr.status === 0) return;
+
+          if (xhr.status >= 200 && xhr.status < 300) {
+            updateUpload(id, { progress: 100, status: "completed" });
+            fetchQuota();
+
+            const isExplorerPage = ["index", "files-path"].includes(
+              route.name as string,
             );
-            if (current) {
-              updateUpload(id, { speed });
+            if (isExplorerPage && currentParentID.value === parentID) {
+              fetchFiles(parentID);
             }
-          }
 
-          if (now - lastUpdate > THROTTLE_MS || progress === 100) {
-            lastUpdate = now;
-            const current = uploads.value.find(
-              (u: { id: string }) => u.id === id,
-            );
-            if (current && current.status !== "error") {
-              updateUpload(id, {
-                progress,
-                status: progress >= 100 ? "processing" : "uploading",
-              });
+            setTimeout(() => {
+              removeUpload(id);
+            }, 3000);
+
+            resolve();
+          } else if (xhr.status === 401 && !isRetry) {
+            const { handle401 } = useTokenRefresh();
+            const refreshed = await handle401();
+            if (refreshed) {
+              startXhr(true);
+              return;
             }
+            // If refresh failed, fall through to error handling
+            updateUpload(id, {
+              status: "error",
+              error: "upload.error.unauthorized",
+            });
+            reject(new Error("upload.error.unauthorized"));
+          } else {
+            let errorKey = ERROR_MAP[xhr.status] || "upload.error.unknown";
+            try {
+              const response = JSON.parse(xhr.responseText);
+              if (response.localizationKey) {
+                errorKey = response.localizationKey;
+              }
+            } catch (e) {}
+
+            updateUpload(id, { status: "error", error: errorKey });
+            reject(new Error(errorKey));
           }
-        }
+        };
+
+        xhr.onerror = () => {
+          updateUpload(id, {
+            status: "error",
+            error: "upload.error.networkError",
+          });
+          reject(new Error("networkError"));
+        };
+
+        updateUpload(id, { status: "uploading" });
+        xhr.send(file);
       };
-
-      xhr.onload = () => {
-        if (xhr.status === 0) return;
-
-        if (xhr.status >= 200 && xhr.status < 300) {
-          updateUpload(id, { progress: 100, status: "completed" });
-          fetchQuota();
-
-          const isExplorerPage = ["index", "files-path"].includes(
-            route.name as string,
-          );
-          if (isExplorerPage && currentParentID.value === parentID) {
-            fetchFiles(parentID);
-          }
-
-          setTimeout(() => {
-            removeUpload(id);
-          }, 3000);
-
-          resolve();
-        } else {
-          let errorKey = ERROR_MAP[xhr.status] || "upload.error.unknown";
-          try {
-            const response = JSON.parse(xhr.responseText);
-            if (response.localizationKey) {
-              errorKey = response.localizationKey;
-            }
-          } catch (e) {}
-
-          updateUpload(id, { status: "error", error: errorKey });
-          reject(new Error(errorKey));
-        }
-      };
-
-      xhr.onerror = () => {
-        updateUpload(id, {
-          status: "error",
-          error: "upload.error.networkError",
-        });
-        reject(new Error("networkError"));
-      };
-
-      updateUpload(id, { status: "uploading" });
-      xhr.send(file);
+      startXhr();
     });
   };
 
@@ -223,13 +239,13 @@ export const useUploads = () => {
     let uploadToken: string | undefined; // Store JWT token
 
     try {
-      const initiateResponse = await $fetch<{
+      const initiateResponse = await useApi<{
         sessionID: string;
         fileID: string;
         uploadID: string;
         maxChunkSize: number;
         token: string; // JWT token from server
-      }>(`${apiBase}/api/files/multipart/initiate`, {
+      }>(`/api/files/multipart/initiate`, {
         method: "POST",
         body: {
           filename: file.name,
@@ -373,7 +389,7 @@ export const useUploads = () => {
         (a, b) => a.partNumber - b.partNumber,
       );
 
-      await $fetch(`${apiBase}/api/files/multipart/${sessionID}/complete`, {
+      await useApi(`/api/files/multipart/${sessionID}/complete`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${uploadToken}`,
@@ -422,46 +438,78 @@ export const useUploads = () => {
     const url = `${apiBase}/api/files/multipart/${sessionID}/part/${partNumber}`;
 
     return new Promise((resolve, reject) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("PUT", url, true);
-      xhr.setRequestHeader("Content-Length", chunk.size.toString());
-      xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+      const startXhr = (isRetry = false) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", url, true);
+        xhr.setRequestHeader("Content-Length", chunk.size.toString());
+        xhr.setRequestHeader("Authorization", `Bearer ${token}`);
 
-      if (onProgress) {
-        xhr.upload.onprogress = (e) => {
-          if (e.lengthComputable) {
-            onProgress(e.loaded);
+        if (onProgress) {
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              onProgress(e.loaded);
+            }
+          };
+        }
+
+        xhr.onload = async () => {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            try {
+              const response = JSON.parse(xhr.responseText);
+              resolve({
+                partNumber: response.partNumber,
+                etag: response.etag,
+                size: response.size,
+              });
+            } catch (e) {
+              reject(new Error("Failed to parse chunk upload response"));
+            }
+          } else if (xhr.status === 401 && !isRetry) {
+            const { handle401 } = useTokenRefresh();
+            const refreshed = await handle401();
+            // Note: For chunked uploads, we might need to get a new Upload Token if the session expired?
+            // But typically the Upload Token is a separate JWT signature.
+            // If the *API* returns 401, it might refer to the User Session or the Upload Token.
+            // Assuming Upload Token expiry is irrelevant effectively for short uploads, or if it is relevant,
+            // we might need to re-fetch the upload token?
+            // The current backend doesn't seem to have a "refresh upload token" endpoint easily visible here.
+            // However, if the 401 is purely about the user's cookie session (unlikely for a Bearer token req),
+            // but wait:
+            // The request sets `Authorization: Bearer ${token}`. This token comes from `initiate`.
+            // If THIS token expires, `handle401()` (refreshing user session) won't help.
+            // But if the backend validates the user session implicitly?
+            // Actually, if it's a signed JWT specific to the upload, refreshing the user's cookie won't fix it.
+            // UNLESS the `token` passed here IS the user's main token?
+            // `initiateResponse.token` suggests it's a specific token.
+            // If so, `handle401` might not help for chunk failures unless the 401 is from an underlying check.
+            // Let's assume for now we try to refresh main auth. If that doesn't help, we fail.
+            // Ideally, we should re-initiate or get a new token, but we can't easily here.
+            // So we'll try `handle401` once.
+
+            if (refreshed) {
+              // We retry with the SAME token. Use case: The 401 was actually a cookie issue or something?
+              // If it was the Bearer token, this retry will fail again.
+              startXhr(true);
+              return;
+            }
+            reject(new Error(`Chunk upload failed: ${xhr.status}`));
+          } else {
+            reject(new Error(`Chunk upload failed: ${xhr.status}`));
           }
         };
-      }
 
-      xhr.onload = () => {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          try {
-            const response = JSON.parse(xhr.responseText);
-            resolve({
-              partNumber: response.partNumber,
-              etag: response.etag,
-              size: response.size,
-            });
-          } catch (e) {
-            reject(new Error("Failed to parse chunk upload response"));
-          }
-        } else {
-          reject(new Error(`Chunk upload failed: ${xhr.status}`));
-        }
+        xhr.onerror = () => {
+          reject(new Error("Network error during chunk upload"));
+        };
+
+        xhr.send(chunk);
       };
-
-      xhr.onerror = () => {
-        reject(new Error("Network error during chunk upload"));
-      };
-
-      xhr.send(chunk);
+      startXhr();
     });
   };
 
   const abortUpload = async (sessionID: string): Promise<void> => {
-    await $fetch(`${apiBase}/api/files/multipart/${sessionID}/abort`, {
+    await useApi(`/api/files/multipart/${sessionID}/abort`, {
       method: "DELETE",
     }).catch(() => {});
   };
