@@ -12,12 +12,10 @@ const isDraggingProgress = ref(false)
 const seekTime = ref(0) // Separate tracking for seek time when dragging
 
 
-const seekInterval = ref<ReturnType<typeof setInterval> | null>(null)
 const seekTimeout = ref<ReturnType<typeof setTimeout> | null>(null)
 const isHoldSeeking = ref(false)
 const SEEK_HOLD_DELAY = 300 // ms before hold-seek activates
 const SEEK_STEP = 0.15 // seconds per interval tick
-const SEEK_INTERVAL = 16 // ~60fps
 const SEEK_ACCELERATION = 1.06 // multiplier applied each tick
 let currentSeekStep = SEEK_STEP
 
@@ -45,27 +43,28 @@ watch(isPlaying, (newVal) => {
     else audioRef.value.pause()
 })
 
+watch(audioUrl, (newVal, oldVal) => {
+    if (oldVal && oldVal !== newVal) URL.revokeObjectURL(oldVal)
+})
+
+watch(coverUrl, (newVal, oldVal) => {
+    if (oldVal && oldVal !== newVal) URL.revokeObjectURL(oldVal)
+})
+
 const loadTrack = async () => {
 
     error.value = null
 
-
-    if (coverUrl.value) {
-        URL.revokeObjectURL(coverUrl.value)
+    if (!currentTrack.value || !trackSrc.value) {
+        // If no track, clear visuals. The watchers will handle revocation.
         coverUrl.value = null
-    }
-    if (audioUrl.value) {
-        URL.revokeObjectURL(audioUrl.value)
         audioUrl.value = null
+        title.value = null
+        artist.value = null
+        album.value = null
+        coverInitials.value = ''
+        return
     }
-
-
-    title.value = null
-    artist.value = null
-    album.value = null
-    coverInitials.value = ''
-
-    if (!currentTrack.value || !trackSrc.value) return
 
     try {
         const response = await useApi<Blob>(
@@ -81,21 +80,28 @@ const loadTrack = async () => {
 
         const blob = response
 
+        // Update audio URL immediately. Watcher will revoke the old one.
         audioUrl.value = URL.createObjectURL(blob)
 
-        // Start playback immediately, don't wait for metadata
+        // Start playback immediately
         await nextTick()
         if (audioRef.value) {
             audioRef.value.load()
             if (isPlaying.value) audioRef.value.play().catch(e => console.error("Play error:", e))
         }
 
-
-        parseMetadata(blob)
+        // Parse metadata and update visuals
+        await parseMetadata(blob)
 
     } catch (e: any) {
         console.error("Failed to load track", e)
         error.value = e.data?.localizationKey ? $t(e.data.localizationKey) : $t('error.unknown')
+
+        // On error, clear visuals
+        coverUrl.value = null
+        title.value = null
+        artist.value = null
+        album.value = null
     }
 }
 
@@ -103,21 +109,29 @@ const parseMetadata = async (blob: Blob) => {
     try {
         const metadata = await parseBlob(blob)
 
-        if (metadata.common) {
-            title.value = metadata.common.title || null
-            artist.value = metadata.common.artist || null
-            album.value = metadata.common.album || null
+        title.value = metadata.common?.title || null
+        artist.value = metadata.common?.artist || null
+        album.value = metadata.common?.album || null
 
-            if (metadata.common.picture && metadata.common.picture.length > 0) {
-                const picture = metadata.common.picture[0]
-                if (picture) {
-                    const picBlob = new Blob([new Uint8Array(picture.data)], { type: picture.format })
-                    coverUrl.value = URL.createObjectURL(picBlob)
-                }
+        let newCoverUrl = null
+        if (metadata.common?.picture && metadata.common.picture.length > 0) {
+            const picture = metadata.common.picture[0]
+            if (picture) {
+                const picBlob = new Blob([new Uint8Array(picture.data)], { type: picture.format })
+                newCoverUrl = URL.createObjectURL(picBlob)
             }
         }
+
+        // Update cover URL. Watcher handles revocation of the old one.
+        coverUrl.value = newCoverUrl
+
     } catch (e) {
         console.error("Failed to parse metadata", e)
+        // Ensure to clear if parsing fails
+        title.value = null
+        artist.value = null
+        album.value = null
+        coverUrl.value = null
     }
 }
 
@@ -167,9 +181,17 @@ const formatTime = (time: number) => {
 
 
 
+const cachedProgressBarRect = ref<DOMRect | null>(null)
+
 const handleSeekStart = (e: MouseEvent) => {
     isDraggingProgress.value = true
     seekTime.value = currentTime.value
+
+    // Cache the rect once at start of drag to avoid layout thrashing
+    if (progressBarRef.value) {
+        cachedProgressBarRect.value = progressBarRef.value.getBoundingClientRect()
+    }
+
     handleSeekMove(e)
     document.body.style.cursor = 'grabbing'
     document.addEventListener('mousemove', handleSeekMove)
@@ -177,8 +199,8 @@ const handleSeekStart = (e: MouseEvent) => {
 }
 
 const handleSeekMove = (e: MouseEvent) => {
-    if (!progressBarRef.value || !duration.value) return
-    const rect = progressBarRef.value.getBoundingClientRect()
+    if (!cachedProgressBarRect.value || !duration.value) return
+    const rect = cachedProgressBarRect.value
     const x = e.clientX - rect.left
     const percent = Math.max(0, Math.min(1, x / rect.width))
     seekTime.value = percent * duration.value
@@ -190,6 +212,7 @@ const handleSeekEnd = () => {
         audioRef.value.currentTime = seekTime.value
         currentTime.value = seekTime.value // Sync visuals immediately
     }
+    cachedProgressBarRect.value = null
     document.removeEventListener('mousemove', handleSeekMove)
     document.removeEventListener('mouseup', handleSeekEnd)
     document.body.style.cursor = 'auto'
@@ -197,19 +220,26 @@ const handleSeekEnd = () => {
 
 
 
+const holdSeekAnimationId = ref<number | null>(null)
+
 const startHoldSeek = (direction: 'forward' | 'backward') => {
     currentSeekStep = SEEK_STEP
     // Start a timeout; if the user holds long enough, begin continuous seeking
     seekTimeout.value = setTimeout(() => {
         isHoldSeeking.value = true
-        seekInterval.value = setInterval(() => {
+
+        const seekLoop = () => {
             if (!audioRef.value || !duration.value) return
             currentSeekStep *= SEEK_ACCELERATION
             const delta = direction === 'forward' ? currentSeekStep : -currentSeekStep
             const newTime = Math.max(0, Math.min(duration.value, audioRef.value.currentTime + delta))
             audioRef.value.currentTime = newTime
             currentTime.value = newTime
-        }, SEEK_INTERVAL)
+
+            holdSeekAnimationId.value = requestAnimationFrame(seekLoop)
+        }
+
+        holdSeekAnimationId.value = requestAnimationFrame(seekLoop)
     }, SEEK_HOLD_DELAY)
 }
 
@@ -218,9 +248,10 @@ const stopHoldSeek = (direction: 'forward' | 'backward') => {
         clearTimeout(seekTimeout.value)
         seekTimeout.value = null
     }
-    if (seekInterval.value) {
-        clearInterval(seekInterval.value)
-        seekInterval.value = null
+
+    if (holdSeekAnimationId.value) {
+        cancelAnimationFrame(holdSeekAnimationId.value)
+        holdSeekAnimationId.value = null
     }
 
     if (!isHoldSeeking.value) {
@@ -262,7 +293,7 @@ watch(() => isVisible.value, (visible) => {
 onUnmounted(() => {
     document.removeEventListener('mousemove', handleSeekMove)
     document.removeEventListener('mouseup', handleSeekEnd)
-    if (seekInterval.value) clearInterval(seekInterval.value)
+    if (holdSeekAnimationId.value) cancelAnimationFrame(holdSeekAnimationId.value)
     if (seekTimeout.value) clearTimeout(seekTimeout.value)
     if (coverUrl.value) URL.revokeObjectURL(coverUrl.value)
     if (audioUrl.value) URL.revokeObjectURL(audioUrl.value)
@@ -332,18 +363,21 @@ onUnmounted(() => {
 
                         <div class="flex items-center gap-3 text-xs font-medium text-gray-400 flex-1 select-none px-4">
                             <span>{{ formatTime(currentDisplayTime) }}</span>
-                            <div ref="progressBarRef" class="relative flex items-center flex-1 h-5 cursor-pointer group"
+                            <div ref="progressBarRef"
+                                class="relative flex items-center flex-1 h-5 cursor-pointer group select-none touch-none"
                                 @mousedown="handleSeekStart">
 
-                                <div class="absolute inset-x-0 h-2 bg-gray-200 rounded-full">
-                                    <div class="absolute h-full bg-primary-500 rounded-full pointer-events-none transition-[width] duration-75 ease-linear"
-                                        :style="{ width: `${Math.min(Math.max(1, progressPercent), 100)}%` }">
+                                <div
+                                    class="absolute inset-x-0 h-2 bg-gray-200 dark:bg-neutral-600 rounded-full overflow-hidden translate-z-0">
+                                    <div class="h-full bg-primary-500 rounded-full will-change-[width]"
+                                        :class="isDraggingProgress ? 'transition-none' : 'transition-[width] duration-75 ease-linear'"
+                                        :style="{ width: `${Math.min(Math.max(0, progressPercent), 100)}%` }">
                                     </div>
                                 </div>
 
-                                <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-primary-500 text-white rounded-full shadow border border-gray-200 pointer-events-none transition-opacity duration-150"
-                                    :class="isDraggingProgress ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'"
-                                    :style="{ left: `${Math.min(Math.max(1, progressPercent), 99)}%` }">
+                                <div class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-primary-600 rounded-full shadow-md ointer-events-none transition-[scale,opacity] duration-150 z-10"
+                                    :class="isDraggingProgress ? 'scale-110 opacity-100' : 'scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100'"
+                                    :style="{ left: `${Math.min(Math.max(0, progressPercent), 100)}%` }">
                                 </div>
                             </div>
                             <span>{{ formatTime(duration) }}</span>
@@ -354,7 +388,7 @@ onUnmounted(() => {
 
                             <button @mousedown.prevent="hasPrevious || duration ? startHoldSeek('backward') : undefined"
                                 @mouseup="hasPrevious || duration ? stopHoldSeek('backward') : undefined"
-                                @mouseleave="(seekInterval || seekTimeout) ? stopHoldSeek('backward') : undefined"
+                                @mouseleave="(holdSeekAnimationId || seekTimeout) ? stopHoldSeek('backward') : undefined"
                                 :disabled="!hasPrevious && !duration"
                                 :class="{ 'opacity-50 cursor-not-allowed': !hasPrevious && !duration, 'active:scale-[0.98] cursor-pointer': hasPrevious || duration }"
                                 class="group relative inline-flex items-center justify-center w-10 h-10 rounded-full transition-all duration-150 ease-out border-2 border-gray-200 dark:border-gray-800 select-none">
@@ -398,7 +432,7 @@ onUnmounted(() => {
 
                             <button @mousedown.prevent="hasNext || duration ? startHoldSeek('forward') : undefined"
                                 @mouseup="hasNext || duration ? stopHoldSeek('forward') : undefined"
-                                @mouseleave="(seekInterval || seekTimeout) ? stopHoldSeek('forward') : undefined"
+                                @mouseleave="(holdSeekAnimationId || seekTimeout) ? stopHoldSeek('forward') : undefined"
                                 :disabled="!hasNext && !duration"
                                 :class="{ 'opacity-50 cursor-not-allowed scale-none! shadow-none!': !hasNext && !duration, 'active:scale-[0.98] cursor-pointer': hasNext || duration }"
                                 class="group relative inline-flex items-center justify-center w-10 h-10 rounded-full transition-all duration-150 ease-out border-2 border-gray-200 dark:border-gray-800 select-none">
