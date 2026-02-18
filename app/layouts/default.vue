@@ -24,16 +24,15 @@ onMounted(() => {
 
 <template>
   <div
-    class="flex flex-col gap-0 space-0 h-screen overflow-hidden bg-gray-100 text-gray-900 font-sans dark:bg-zinc-950 dark:text-zinc-100 transition-colors duration-500">
+    class="flex flex-col gap-0 space-0 h-screen overflow-hidden bg-gray-100 text-gray-900 font-sans dark:bg-zinc-950 dark:text-zinc-100">
     <AppHeader />
     <div class="flex flex-1 overflow-hidden">
-      <!-- Sidebar -->
+
       <aside class="w-64 shrink-0 overflow-y-auto hidden md:block ">
         <AppSidebar />
       </aside>
 
-      <!-- Mobile Sidebar -->
-      <!-- Mobile Sidebar -->
+
       <div class="relative z-50 md:hidden">
         <Transition enter-active-class="transition-opacity ease-linear duration-300" enter-from-class="opacity-0"
           enter-to-class="opacity-100" leave-active-class="transition-opacity ease-linear duration-300"
@@ -68,7 +67,7 @@ onMounted(() => {
         </Transition>
       </div>
 
-      <!-- Main Content -->
+
       <div class="relative flex-1 min-w-0 flex flex-col">
         <!-- The below is ugly as fuck -->
         <main class="flex-1 overflow-y-auto transition-all duration-300"
