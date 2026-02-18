@@ -33,7 +33,7 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
 <template>
     <div class="w-full relative">
         <table v-if="items.length > 0"
-            class="min-w-full divide-y-0 border-separate border-spacing-y-1 bg-white dark:bg-neutral-800 rounded-2xl px-2 pb-1.25 transition-colors duration-300">
+            class="min-w-full divide-y-0 border-separate border-spacing-y-1 bg-white dark:bg-neutral-800/80 rounded-2xl px-2 pb-1.25">
             <thead>
                 <tr>
                     <!-- Static columns -->
@@ -50,7 +50,7 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
                             <span v-if="sortField === 'name'" class="text-primary-500">
                                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
                             </span>
-                            <span v-else class="text-gray-300 opacity-0 group-hover:opacity-100">↕</span>
+                            <span v-else class="text-gray-300 opacity-0 group-hover:opacity-100">↕︎</span>
                         </div>
                     </th>
 
@@ -64,7 +64,7 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
                                 {{ sortDirection === 'asc' ? '↑' : '↓' }}
                             </span>
                             <span v-else-if="col.sortable"
-                                class="text-gray-300 opacity-0 group-hover:opacity-100">↕</span>
+                                class="text-gray-300 opacity-0 group-hover:opacity-100">↕︎</span>
                         </div>
                     </th>
                 </tr>
