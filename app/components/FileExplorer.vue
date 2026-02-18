@@ -22,7 +22,7 @@ const router = useRouter()
 const { t } = useI18n()
 const { toast } = useToast()
 
-// Composables
+
 const currentItems = computed(() => Array.isArray(props.items) ? props.items : [])
 const { selectedFiles, isAllSelected, isIndeterminate, toggleSelection, toggleSelectAll, clearSelection } = useFileSelection()
 const { sortField, sortDirection, sortedItems, toggleSort } = useFileSorting(currentItems)
@@ -49,22 +49,22 @@ const {
   }
 )
 
-// State
+
 const activeItems = ref<FileItem[]>([])
 const isDeleting = ref(false)
 
-// Modal Toggles
+
 const showCreateFolderModal = ref(false)
 const showDeleteConfirm = ref(false)
 const showRenameModal = ref(false)
 const showMoveDialog = ref(false)
 
-// Input State
+
 const newFolderName = ref('')
 const renameName = ref('')
 const renameExtension = ref('')
 
-// Computed
+
 const currentFolderID = computed(() => props.path[props.path.length - 1] || null)
 const currentDirectory = computed(() => {
   const lastItem = props.breadcrumbs?.[props.breadcrumbs.length - 1]
@@ -79,13 +79,13 @@ const deleteConfirmLabel = computed(() => props.isTrash ? t('files.actions.delet
 
 const refreshCurrentView = async () => props.refresh && await props.refresh()
 
-// File Upload Handler
+
 const handleUploadFiles = async (files: File[]) => {
   await Promise.all(files.map(file => uploadFile(file, currentFolderID.value)))
   await refreshCurrentView()
 }
 
-// Folder Actions
+
 const openCreateFolderModal = () => {
   newFolderName.value = ''
   showCreateFolderModal.value = true
@@ -103,7 +103,7 @@ const handleCreateFolder = async () => {
   }
 }
 
-// Delete Actions
+
 const openDeleteConfirm = (item?: FileItem) => {
   activeItems.value = item ? [item] : currentItems.value.filter(i => selectedFiles.value.has(i.id))
   if (activeItems.value.length > 0) showDeleteConfirm.value = true
@@ -121,14 +121,14 @@ const confirmDelete = async () => {
     clearSelection()
     showDeleteConfirm.value = false
   } catch (e) {
-    toast.error(t('files.alerts.deleteFailed'))
+    toast.error(t('files.error.deleteFailed'))
   } finally {
     isDeleting.value = false
     activeItems.value = []
   }
 }
 
-// Rename Actions
+
 const startRename = async (item: FileItem) => {
   activeItems.value = [item]
   const parts = item.name.split('.')
@@ -150,18 +150,18 @@ const handleRename = async () => {
   }
 }
 
-// Restore Actions
+
 const handleRestore = async (item?: FileItem) => {
   const targets = item ? [item] : currentItems.value.filter(i => selectedFiles.value.has(i.id))
   try {
     await Promise.all(targets.map(t => restoreFile(t.id)))
     clearSelection()
   } catch (e) {
-    toast.error(t('files.alerts.restoreFailed'))
+    toast.error(t('files.error.restoreFailed'))
   }
 }
 
-// Move Actions
+
 const handleMoveFile = async (payload: { sourceIds: string[], targetId: string | null }) => {
   if (payload.sourceIds.length === 0) return
   try {
@@ -177,7 +177,7 @@ const openMoveDialog = (item?: FileItem) => {
   if (activeItems.value.length > 0) showMoveDialog.value = true
 }
 
-// Download Action
+
 const handleDownloadFile = async (item: FileItem) => {
   try {
     const apiBase = useApiBase()
@@ -189,11 +189,11 @@ const handleDownloadFile = async (item: FileItem) => {
     link.click()
     document.body.removeChild(link)
   } catch (e) {
-    toast.error(t('files.alerts.downloadFailed'))
+    toast.error(t('files.error.downloadFailed'))
   }
 }
 
-// Context Menu
+
 const contextMenuRef = ref()
 const handleContextMenu = (event: MouseEvent, item: FileItem) => contextMenuRef.value?.open(event, item)
 
@@ -210,7 +210,7 @@ const handleContextMenuAction = (action: string, item: FileItem) => {
   }
 }
 
-// Update query string with path
+
 watch(() => props.breadcrumbs, (newVal) => {
   if (!newVal || newVal.length <= 1) return
   const pathString = '/' + newVal.filter(i => i.id !== null).map(i => i.name).join('/')
@@ -233,7 +233,7 @@ watch(() => props.breadcrumbs, (newVal) => {
       @contextmenu="handleContextMenu" @open="handleContextMenuAction('open', $event)" @dragstart="onRowDragStart"
       @dragover="onRowDragOver" @dragleave="dropTargetId = null" @drop="onRowDrop" />
 
-    <!-- Drag Ghost -->
+
     <Teleport to="body">
       <div class="fixed -top-96 left-0 z-50 pointer-events-none p-3  shadow-lg">
         <div ref="dragGhostRef"
