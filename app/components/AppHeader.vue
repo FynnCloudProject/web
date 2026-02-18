@@ -3,7 +3,10 @@ import AppButton from './AppButton.vue';
 
 const { logout } = useAuth()
 const { appName } = useBackEndConfig()
-
+const route = useRoute()
+const homePath = computed<string>(() => {
+    return route.path.includes('admin') ? '/admin' : '/'
+})
 
 
 const searchQuery = ref('')
@@ -14,8 +17,12 @@ const handleLogout = async () => {
 
 <template>
     <div class="sticky top-0 left-0 right-0 z-30">
-        <header
-            class="shrink-0 h-14 shadow-[0_0px_4px_0_rgba(0,0,0,.1)] flex items-center justify-between px-4 bg-white dark:bg-neutral-900 dark:border-b dark:border-neutral-800 transition-all duration-500">
+        <header class="shrink-0 h-14 flex items-center justify-between px-4 transition-all duration-500
+                   bg-linear-to-b from-white to-gray-50/80
+                   dark:from-neutral-800/90 dark:to-neutral-900/95 dark:backdrop-blur-xl dark:backdrop-saturate-150
+                   shadow-[inset_0_-1px_0_rgba(0,0,0,0.04),0_1px_3px_rgba(0,0,0,0.06),0_2px_8px_rgba(0,0,0,0.04)]
+                   dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_1px_3px_rgba(0,0,0,0.3),0_2px_8px_rgba(0,0,0,0.2)]
+                   dark:border-b dark:border-white/5">
             <div class="flex items-center gap-2">
                 <button type="button" class="md:hidden p-2 -ml-2 text-gray-600 hover:text-gray-900"
                     @click="useUI().toggleSidebar()">
@@ -25,7 +32,7 @@ const handleLogout = async () => {
                             d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                     </svg>
                 </button>
-                <NuxtLink to="/" class="flex items-center gap-2 text-3xl font-extralight text-primary-600">
+                <NuxtLink :to="homePath" class="flex items-center gap-2 text-3xl font-extralight text-primary-600">
                     <AppLogo />
                 </NuxtLink>
 
