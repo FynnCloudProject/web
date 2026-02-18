@@ -181,6 +181,7 @@
         "title": "Amministrazione",
         "overview": "Panoramica",
         "users": "Utenti",
+        "tiers": "Piani",
         "settings": "Impostazioni",
         "backToFiles": "Torna ai file",
         "systemInfo": "Informazioni di sistema",
@@ -188,6 +189,13 @@
         "version": "Versione",
         "environment": "Ambiente",
         "comingSoon": "Prossimamente",
+        "settingsPage": {
+            "branding": "Branding",
+            "primaryColor": "Colore primario",
+            "appNameHint": "Visualizzato nella barra del titolo e in tutta l'interfaccia.",
+            "saved": "Impostazioni salvate",
+            "unsavedChanges": "Hai modifiche non salvate"
+        },
         "alerts": {
             "title": "Stato del sistema",
             "critical": "Critico",
@@ -219,9 +227,39 @@
             "setTier": "Imposta piano",
             "setTierDescription": "Scegli un piano di archiviazione per {name}.",
             "noTier": "Nessun piano (predefinito del gruppo)",
+            "inherit": "Eredita",
             "manageGroups": "Gestisci gruppi",
             "manageGroupsDescription": "Modifica l'appartenenza ai gruppi di {name}.",
-            "searchGroups": "Cerca gruppi disponibili..."
+            "searchGroups": "Cerca gruppi disponibili...",
+            "addUser": "Aggiungi utente",
+            "username": "Nome utente",
+            "email": "E-mail",
+            "password": "Password",
+            "usernamePlaceholder": "Inserisci nome utente...",
+            "emailPlaceholder": "Inserisci e-mail...",
+            "passwordPlaceholder": "Inserisci password..."
+        },
+        "groupManagement": {
+            "title": "Gruppi",
+            "addGroup": "Aggiungi gruppo",
+            "groupName": "Nome del gruppo",
+            "renameGroup": "Rinomina gruppo",
+            "deleteGroup": "Elimina gruppo",
+            "deleteConfirm": "Vuoi davvero eliminare il gruppo <b>{name}</b>? Gli utenti verranno rimossi da questo gruppo.",
+            "createError": "Impossibile creare il gruppo",
+            "namePlaceholder": "Inserisci il nome del gruppo..."
+        },
+        "tierManagement": {
+            "tierName": "Nome del piano",
+            "storageLimit": "Limite di archiviazione",
+            "addTier": "Aggiungi piano",
+            "editTier": "Modifica piano",
+            "deleteTier": "Elimina piano",
+            "deleteConfirm": "Vuoi davvero eliminare il piano <b>{name}</b>? Non deve essere assegnato a nessun utente o gruppo.",
+            "createError": "Impossibile creare il piano",
+            "namePlaceholder": "es. Ospiti, Personale, 50 GB...",
+            "limitPlaceholder": "es. 100",
+            "limitHint": "Inserisci il limite di archiviazione in gigabyte (GB)."
         }
     }
 }

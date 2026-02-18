@@ -5,6 +5,12 @@
             "userExists": "Benutzername bereits vergeben",
             "emailExists": "E-Mail-Adresse bereits vergeben",
             "passwordMismatch": "Passwörter stimmen nicht überein",
+            "passwordTooWeak": "Passwort ist zu schwach. Es muss mindestens 8 Zeichen lang sein und mindestens eine Groß- und eine Kleinschreibung, eine Ziffer und ein Sonderzeichen enthalten.",
+            "passwordTooShort": "Passwort ist zu kurz. Es muss mindestens 8 Zeichen lang sein.",
+            "passwordMissingSpecialCharacter": "Passwort muss mindestens ein Sonderzeichen enthalten.",
+            "passwordMissingNumber": "Passwort muss mindestens eine Ziffer enthalten.",
+            "passwordMissingUppercase": "Passwort muss mindestens einen Grossbuchstaben enthalten.",
+            "passwordMissingLowercase": "Passwort muss mindestens einen Kleinbuchstaben enthalten.",
             "missingParams": "Erforderliche Autorisierungsparameter fehlen.",
             "invalidClientId": "Ungültige Client-ID.",
             "invalidResponseType": "Ungültiger Antworttyp.",
@@ -181,6 +187,7 @@
         "title": "Administration",
         "overview": "Übersicht",
         "users": "Benutzer",
+        "tiers": "Speicherpläne",
         "settings": "Einstellungen",
         "backToFiles": "Zurück zu Dateien",
         "systemInfo": "Systeminformationen",
@@ -188,6 +195,13 @@
         "version": "Version",
         "environment": "Umgebung",
         "comingSoon": "Demnächst verfügbar",
+        "settingsPage": {
+            "branding": "Branding",
+            "primaryColor": "Primärfarbe",
+            "appNameHint": "Wird in der Titelleiste und der gesamten Oberfläche angezeigt.",
+            "saved": "Einstellungen gespeichert",
+            "unsavedChanges": "Du hast nicht gespeicherte Änderungen"
+        },
         "alerts": {
             "title": "Systemzustand",
             "critical": "Kritisch",
@@ -206,6 +220,7 @@
             "httpNotHttps": "HTTP wird nicht empfohlen. Verwende HTTPS."
         },
         "userManagement": {
+            "title": "Benutzer",
             "userSingular": "Benutzer",
             "userPlural": "Benutzer",
             "groups": "Gruppen",
@@ -219,9 +234,41 @@
             "setTier": "Speicherplan setzen",
             "setTierDescription": "Wähle einen Speicherplan für {name}.",
             "noTier": "Kein Plan (Gruppenstandard)",
+            "inherit": "Vererben",
             "manageGroups": "Gruppen verwalten",
             "manageGroupsDescription": "Gruppenmitgliedschaft für {name} bearbeiten.",
-            "searchGroups": "Verfügbare Gruppen suchen..."
+            "searchGroups": "Verfügbare Gruppen suchen...",
+            "addUser": "Benutzer hinzufügen",
+            "username": "Benutzername",
+            "email": "E-Mail",
+            "password": "Passwort",
+            "usernamePlaceholder": "Benutzername eingeben...",
+            "emailPlaceholder": "E-Mail eingeben...",
+            "passwordPlaceholder": "Passwort eingeben...",
+            "redGroupsAdminPrivsInfo": "Rot markierte Gruppen besitzen Admin-Rechte."
+        },
+        "groupManagement": {
+            "title": "Gruppen",
+            "addGroup": "Gruppe hinzufügen",
+            "groupName": "Gruppenname",
+            "renameGroup": "Gruppe umbenennen",
+            "deleteGroup": "Gruppe löschen",
+            "deleteConfirm": "Möchtest du die Gruppe <b>{name}</b> wirklich löschen? Benutzer werden aus dieser Gruppe entfernt.",
+            "createError": "Gruppe konnte nicht erstellt werden",
+            "namePlaceholder": "Gruppenname eingeben..."
+        },
+        "tierManagement": {
+            "tierName": "Planname",
+            "storageLimit": "Speicherlimit",
+            "addTier": "Plan hinzufügen",
+            "editTier": "Plan bearbeiten",
+            "deleteTier": "Plan löschen",
+            "deleteConfirm": "Möchtest du den Plan <b>{name}</b> wirklich löschen? Er darf keinen Benutzern oder Gruppen zugewiesen sein.",
+            "createError": "Plan konnte nicht erstellt werden",
+            "namePlaceholder": "z.B. Gäste, Personal, 50 GB...",
+            "limitPlaceholder": "z.B. 100",
+            "limitHint": "Speicherlimit in Gigabyte (GB) eingeben.",
+            "unlimited": "Unlimitiert"
         }
     }
 }

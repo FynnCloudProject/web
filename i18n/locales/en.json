@@ -5,6 +5,13 @@
             "userExists": "Username already exists",
             "emailExists": "Email already exists",
             "passwordMismatch": "Passwords do not match",
+            "passwordTooWeak": "Password is too weak. It must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
+            "passwordTooShort": "Password is too short. It must be at least 8 characters long.",
+            "passwordMissingSpecialCharacter": "Password must contain at least one special character.",
+            "passwordMissingNumber": "Password must contain at least one number.",
+            "passwordMissingUppercase": "Password must contain at least one uppercase letter.",
+            "passwordMissingLowercase": "Password must contain at least one lowercase letter.",
+            
             "missingParams": "Missing required authorization parameters.",
             "invalidClientId": "Invalid client ID.",
             "invalidResponseType": "Invalid response type.",
@@ -181,13 +188,22 @@
         "title": "Administration",
         "overview": "Overview",
         "users": "Users",
+        "tiers": "Tiers",
         "settings": "Settings",
         "backToFiles": "Back to Files",
         "systemInfo": "System Information",
         "appName": "App Name",
-        "version": "Version",
+        "uiVersion": "UI Version",
+        "serverVersion": "Server Version",
         "environment": "Environment",
         "comingSoon": "Coming soon",
+        "settingsPage": {
+            "branding": "Branding",
+            "primaryColor": "Primary Color",
+            "appNameHint": "Displayed in the title bar and throughout the app.",
+            "saved": "Settings saved",
+            "unsavedChanges": "You have unsaved changes"
+        },
         "alerts": {
             "title": "System Health",
             "critical": "Critical",
@@ -206,6 +222,7 @@
             "httpNotHttps": "HTTP is not recommended for production. Consider using HTTPS."
         },
         "userManagement": {
+            "title": "Users",
             "userSingular": "user",
             "userPlural": "users",
             "groups": "Groups",
@@ -218,10 +235,42 @@
             "deleteConfirmShort": "Delete {name} and all their files?",
             "setTier": "Set Tier",
             "setTierDescription": "Choose a storage tier for {name}.",
-            "noTier": "No tier (use group default)",
+            "noTier": "No tier",
+            "inherit": "Inherit",
             "manageGroups": "Manage Groups",
             "manageGroupsDescription": "Toggle group membership for {name}.",
-            "searchGroups": "Search available groups..."
+            "searchGroups": "Search available groups...",
+            "addUser": "Add User",
+            "username": "Username",
+            "email": "Email",
+            "password": "Password",
+            "usernamePlaceholder": "Enter username...",
+            "emailPlaceholder": "Enter email...",
+            "passwordPlaceholder": "Enter password...",
+            "redGroupsAdminPrivsInfo": "Groups marked red have admin privileges."
+        },
+        "groupManagement": {
+            "title": "Groups",
+            "addGroup": "Add Group",
+            "groupName": "Group Name",
+            "renameGroup": "Rename Group",
+            "deleteGroup": "Delete Group",
+            "deleteConfirm": "Are you sure you want to delete the group <b>{name}</b>? Users will be removed from this group.",
+            "createError": "Failed to create group",
+            "namePlaceholder": "Enter group name..."
+        },
+        "tierManagement": {
+            "tierName": "Tier Name",
+            "storageLimit": "Storage Limit",
+            "addTier": "Add Tier",
+            "editTier": "Edit Tier",
+            "deleteTier": "Delete Tier",
+            "deleteConfirm": "Are you sure you want to delete the tier <b>{name}</b>? It must not be assigned to any users or groups.",
+            "createError": "Failed to create tier",
+            "namePlaceholder": "e.g. Guests, Staff, 50 GB...",
+            "limitPlaceholder": "e.g. 100",
+            "limitHint": "Enter the storage limit in gigabytes (GB).",
+            "unlimited": "Unlimited"
         }
     }
 }

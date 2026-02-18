@@ -181,6 +181,7 @@
         "title": "Administration",
         "overview": "Vue d'ensemble",
         "users": "Utilisateurs",
+        "tiers": "Plans",
         "settings": "Paramètres",
         "backToFiles": "Retour aux fichiers",
         "systemInfo": "Informations système",
@@ -188,6 +189,13 @@
         "version": "Version",
         "environment": "Environnement",
         "comingSoon": "Bientôt disponible",
+        "settingsPage": {
+            "branding": "Image de marque",
+            "primaryColor": "Couleur principale",
+            "appNameHint": "Affiché dans la barre de titre et dans toute l'interface.",
+            "saved": "Paramètres enregistrés",
+            "unsavedChanges": "Vous avez des modifications non enregistrées"
+        },
         "alerts": {
             "title": "État du système",
             "critical": "Critique",
@@ -219,9 +227,39 @@
             "setTier": "Définir le plan",
             "setTierDescription": "Choisissez un plan de stockage pour {name}.",
             "noTier": "Aucun plan (par défaut du groupe)",
+            "inherit": "Hériter",
             "manageGroups": "Gérer les groupes",
             "manageGroupsDescription": "Modifier l'appartenance aux groupes de {name}.",
-            "searchGroups": "Rechercher les groupes disponibles..."
+            "searchGroups": "Rechercher les groupes disponibles...",
+            "addUser": "Ajouter un utilisateur",
+            "username": "Nom d'utilisateur",
+            "email": "E-mail",
+            "password": "Mot de passe",
+            "usernamePlaceholder": "Saisir le nom d'utilisateur...",
+            "emailPlaceholder": "Saisir l'e-mail...",
+            "passwordPlaceholder": "Saisir le mot de passe..."
+        },
+        "groupManagement": {
+            "title": "Groupes",
+            "addGroup": "Ajouter un groupe",
+            "groupName": "Nom du groupe",
+            "renameGroup": "Renommer le groupe",
+            "deleteGroup": "Supprimer le groupe",
+            "deleteConfirm": "Voulez-vous vraiment supprimer le groupe <b>{name}</b> ? Les utilisateurs seront retirés de ce groupe.",
+            "createError": "Échec de la création du groupe",
+            "namePlaceholder": "Saisir le nom du groupe..."
+        },
+        "tierManagement": {
+            "tierName": "Nom du plan",
+            "storageLimit": "Limite de stockage",
+            "addTier": "Ajouter un plan",
+            "editTier": "Modifier le plan",
+            "deleteTier": "Supprimer le plan",
+            "deleteConfirm": "Voulez-vous vraiment supprimer le plan <b>{name}</b> ? Il ne doit être attribué à aucun utilisateur ou groupe.",
+            "createError": "Échec de la création du plan",
+            "namePlaceholder": "ex. Invités, Personnel, 50 Go...",
+            "limitPlaceholder": "ex. 100",
+            "limitHint": "Saisir la limite de stockage en gigaoctets (Go)."
         }
     }
 }
