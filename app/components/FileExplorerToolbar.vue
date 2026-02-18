@@ -49,9 +49,9 @@ const handleMoveFile = (payload: { sourceIds: string[], targetId: string | null 
         <div class="flex flex-col items-end justify-end gap-2 self-end">
             <div class="flex flex-row items-center gap-2">
                 <input ref="fileInput" type="file" multiple class="hidden" @change="onFileChange" />
-                <AppButton v-if="!readOnly" @click="handleTriggerUpload" rounded="rounded-xl" variant="white"
-                    border-class="border border-gray-300" textColor="text-primary-700" :text-shadow="false"
-                    icon="heroicons:cloud-arrow-up-solid">
+                <AppButton v-if="!readOnly" @click="handleTriggerUpload" rounded="rounded-xl" variant="canvas"
+                    border-class="border border-gray-300 dark:border-none" textColor="text-primary-700 dark:text-white"
+                    :text-shadow="false" icon="heroicons:cloud-arrow-up-solid">
                     {{ t('files.upload') }}
                 </AppButton>
                 <AppButton v-if="!readOnly" @click="emit('createFolder')" rounded="rounded-xl" color="green"
@@ -62,8 +62,9 @@ const handleMoveFile = (payload: { sourceIds: string[], targetId: string | null 
 
             <!-- Column Toggle -->
             <div v-if="hasItems || breadcrumbs.length > 1" class="relative z-20 float-right">
-                <AppButton @click="showColumnMenu = !showColumnMenu" rounded="rounded-xl" variant="white"
-                    icon="lucide:columns-3-cog" />
+                <AppButton @click="showColumnMenu = !showColumnMenu" rounded="rounded-xl" variant="canvas"
+                    border-class="border border-gray-300 dark:border-none" textColor="text-primary-700 dark:text-white"
+                    :text-shadow="false" icon="lucide:columns-3-cog" />
 
                 <div v-if="showColumnMenu"
                     class="absolute right-0 top-full mt-2 w-56 bg-white dark:bg-neutral-800 rounded-2xl shadow-xl border border-gray-200 dark:border-neutral-700 p-2 origin-top-right transition-all"
