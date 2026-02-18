@@ -40,7 +40,7 @@ const handleRowClick = (event: MouseEvent) => {
 
 const rowBackgroundClasses = computed(() => {
     if (props.selected) {
-        return 'bg-linear-to-b from-primary-500 to-primary-700 border-primary-500 shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_2px_4px_rgba(0,0,0,0.2)]'
+        return 'bg-linear-to-b from-primary-500 to-primary-700 border-primary-500 shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_2px_4px_rgba(0,0,0,0.2)] dark:from-primary-800 dark:to-primary-900 dark:border-primary-800 dark:shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_2px_4px_rgba(0,0,0,0.2)]'
     }
     if (props.isDropTarget) {
         return 'bg-primary-50 dark:bg-primary-900/10 !border-primary-500 !border-y-2 first:!border-l-2 last:!border-r-2'
