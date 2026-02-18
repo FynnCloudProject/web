@@ -43,11 +43,15 @@ const handleInput = (event: Event) => {
             </svg>
         </div>
         <input ref="searchInput" type="text" :value="modelValue" :placeholder="placeholder || 'Search...'"
-            class="block w-full rounded-xl border-none ring-1 ring-black/5 dark:ring-white/10 bg-gray-100 dark:bg-neutral-800 py-2 pl-10 pr-12 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/50 dark:focus:ring-primary-500/40 transition-all duration-200"
+            class="block w-full rounded-xl border-none bg-gray-100/80 dark:bg-neutral-800/80 input-3d py-2 pl-10 pr-12 text-sm text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500/40 focus:bg-white dark:focus:bg-neutral-800 dark:focus:ring-primary-500/30 transition-all duration-200"
             @input="handleInput" />
         <div class="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-            <kbd
-                class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded border border-gray-200 dark:border-neutral-700 bg-white dark:bg-neutral-700 text-[10px] font-sans font-medium text-gray-400 dark:text-gray-500">
+            <kbd class="hidden sm:inline-flex items-center gap-1 px-1.5 py-0.5 rounded
+                       bg-linear-to-b from-gray-50 to-gray-150 dark:from-neutral-600 dark:to-neutral-700
+                       border border-gray-200/80 dark:border-neutral-600
+                       shadow-[0_1px_2px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,0.8)]
+                       dark:shadow-[0_1px_2px_rgba(0,0,0,0.2),inset_0_1px_0_rgba(255,255,255,0.06)]
+                       text-[10px] font-sans font-medium text-gray-400 dark:text-gray-400">
                 <span class="text-xs">⌘</span>K
             </kbd>
         </div>
