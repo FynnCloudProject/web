@@ -63,10 +63,10 @@ const actions = computed(() => {
     const isDeleted = item.deletedAt != null;
     const isFolder = item.type === 'folder';
 
-    // Check if the file is openable
+
     const isOpenable = item.type === 'audio' || item.type === 'video' || item.type === 'image' || item.type === 'pdf';
 
-    // Check if the file is playable
+
     const isPlayable = item.type === 'audio' || item.type === 'video';
 
     if (isDeleted) {
@@ -78,7 +78,7 @@ const actions = computed(() => {
 
     const activeActions = [];
 
-    // Open/Play logic
+
     if (isFolder || isOpenable) {
         activeActions.push({
             label: isPlayable ? t('files.actions.play') : t('files.actions.open'),
@@ -87,12 +87,12 @@ const actions = computed(() => {
         });
     }
 
-    // Download (Only for files, not folders)
+
     if (!isFolder) {
         activeActions.push({ label: t('files.actions.download'), id: 'download', icon: 'download' });
     }
 
-    // Standard actions for all active items
+
     activeActions.push(
         { label: t('files.actions.move.button'), id: 'move', icon: 'move' },
         { label: t('files.actions.rename.button'), id: 'rename', icon: 'edit' },
@@ -114,19 +114,19 @@ defineExpose({ open, close })
                 class="group relative flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-sm text-left transition-all duration-150 ease-out active:scale-[0.98] cursor-pointer"
                 @click="handleAction(action.id)">
 
-                <!-- Hover/Active Background -->
+
                 <div class="absolute inset-0 bg-linear-to-b shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.1)] rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-150 ease-out group-active:shadow-[inset_0_8px_16px_-2px_rgba(0,0,0,0.4)]"
                     :class="action.danger
                         ? 'from-red-500 to-red-700 group-active:from-red-600 group-active:to-red-800'
                         : 'from-primary-500 to-primary-700 group-active:from-primary-600 group-active:to-primary-800'">
                 </div>
 
-                <!-- Content -->
+
                 <div class="relative z-10 flex items-center gap-2.5" :class="[
                     'group-hover:text-white',
                     action.danger ? 'text-red-600 dark:text-red-500' : 'text-gray-700 dark:text-gray-300'
                 ]">
-                    <!-- Simple SVG Icons -->
+
                     <svg v-if="action.icon === 'folder-open'" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round">
