@@ -32,5 +32,5 @@
     "nuxt": "^4.3.1",
     "tailwind-corner-smoothing": "^1.2.0"
   },
-  "version": "0.1.0"
+  "version": "0.0.1"
 }
