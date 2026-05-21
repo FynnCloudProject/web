@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'i18n/locales/en.json'
+  workflow_dispatch: 
 
 jobs:
   trigger:
