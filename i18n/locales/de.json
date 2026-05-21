@@ -269,6 +269,17 @@
             "limitPlaceholder": "z.B. 100",
             "limitHint": "Speicherlimit in Gigabyte (GB) eingeben.",
             "unlimited": "Unlimitiert"
+        },
+        "tasks": {
+            "title": "Aufgaben",
+            "name": "Aufgabe",
+            "schedule": "Zeitplan",
+            "lastRun": "Letzte Ausführung",
+            "noJobs": "Keine geplanten Aufgaben gefunden.",
+            "never": "Nie",
+            "justNow": "Gerade eben",
+            "minutesAgo": "Vor {n} Min.",
+            "hoursAgo": "Vor {n} Std."
         }
     }
 }

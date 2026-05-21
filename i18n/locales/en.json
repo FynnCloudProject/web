@@ -271,6 +271,17 @@
             "limitPlaceholder": "e.g. 100",
             "limitHint": "Enter the storage limit in gigabytes (GB).",
             "unlimited": "Unlimited"
+        },
+        "tasks": {
+            "title": "Tasks",
+            "name": "Task",
+            "schedule": "Schedule",
+            "lastRun": "Last Run",
+            "noJobs": "No scheduled tasks found.",
+            "never": "Never",
+            "justNow": "Just now",
+            "minutesAgo": "{n} min ago",
+            "hoursAgo": "{n}h ago"
         }
     }
 }
