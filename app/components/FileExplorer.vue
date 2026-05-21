@@ -1,32 +1,43 @@
 <script setup lang="ts">
+import { computed, ref, watch, toRef } from 'vue'
 import type { FileItem, BreadcrumbItem } from '~/types/file'
+import type { FileManager } from '~/composables/useFiles'
 
 const props = withDefaults(defineProps<{
-  path: string[]
-  items?: FileItem[]
+  manager: FileManager
   readOnly?: boolean
-  isTrash?: boolean | false
-  refresh?: () => Promise<any>
-  breadcrumbs?: BreadcrumbItem[]
+  isTrash?: boolean
 }>(), {
   readOnly: false,
-  isTrash: false,
-  breadcrumbs: () => []
+  isTrash: false
 })
 
-const { uploadFile } = useUploads()
+const { uploadFile, onUploadComplete } = useUploads()
 const { openFile } = useFileHandlers()
-const { createFolder, deleteFiles, deleteFilesPermanently, renameFile, moveFile, restoreFile, getDeleteDescription } = useFiles()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { toast } = useToast()
 
+const {
+  files: currentItems,
+  breadcrumbs: breadcrumbsModel,
+  currentParentID: currentFolderID,
+  isLoading,
+  createFolder,
+  deleteFiles,
+  deleteFilesPermanently,
+  renameFile,
+  moveFile,
+  restoreFile,
+  refresh,
+  getDeleteDescription
+} = props.manager
 
-const currentItems = computed(() => Array.isArray(props.items) ? props.items : [])
 const { selectedFiles, isAllSelected, isIndeterminate, toggleSelection, toggleSelectAll, clearSelection } = useFileSelection()
 const { sortField, sortDirection, sortedItems, toggleSort } = useFileSorting(currentItems)
 const { activeColumns } = useFileColumns(toRef(props, 'isTrash'))
+
 const {
   dragGhostRef,
   isExternalDragging,
@@ -49,25 +60,20 @@ const {
   }
 )
 
-
 const activeItems = ref<FileItem[]>([])
 const isDeleting = ref(false)
-
 
 const showCreateFolderModal = ref(false)
 const showDeleteConfirm = ref(false)
 const showRenameModal = ref(false)
 const showMoveDialog = ref(false)
 
-
 const newFolderName = ref('')
 const renameName = ref('')
 const renameExtension = ref('')
 
-
-const currentFolderID = computed(() => props.path[props.path.length - 1] || null)
 const currentDirectory = computed(() => {
-  const lastItem = props.breadcrumbs?.[props.breadcrumbs.length - 1]
+  const lastItem = breadcrumbsModel.value?.[breadcrumbsModel.value.length - 1]
   if (lastItem?.labelKey) return t(lastItem.labelKey)
   if (lastItem && !lastItem.id && !lastItem.labelKey) return t('navigation.allFiles')
   return lastItem?.name || t('navigation.allFiles')
@@ -77,14 +83,19 @@ const deleteDescription = computed(() => getDeleteDescription(activeItems.value,
 const deleteTitle = computed(() => props.isTrash ? t('files.actions.deletePermanent.title') : t('files.actions.delete.title'))
 const deleteConfirmLabel = computed(() => props.isTrash ? t('files.actions.deletePermanent.button') : t('files.actions.delete.button'))
 
-const refreshCurrentView = async () => props.refresh && await props.refresh()
+const refreshCurrentView = async () => refresh && await refresh()
 
+// Refresh file list when an upload completes in the current folder
+onUploadComplete((parentID) => {
+  if (parentID === currentFolderID.value) {
+    refreshCurrentView()
+  }
+})
 
 const handleUploadFiles = async (files: File[]) => {
   await Promise.all(files.map(file => uploadFile(file, currentFolderID.value)))
   await refreshCurrentView()
 }
-
 
 const openCreateFolderModal = () => {
   newFolderName.value = ''
@@ -102,7 +113,6 @@ const handleCreateFolder = async () => {
     )
   }
 }
-
 
 const openDeleteConfirm = (item?: FileItem) => {
   activeItems.value = item ? [item] : currentItems.value.filter(i => selectedFiles.value.has(i.id))
@@ -128,7 +138,6 @@ const confirmDelete = async () => {
   }
 }
 
-
 const startRename = async (item: FileItem) => {
   activeItems.value = [item]
   const parts = item.name.split('.')
@@ -139,7 +148,7 @@ const startRename = async (item: FileItem) => {
 }
 
 const handleRename = async () => {
-  const item = activeItems.value[0]
+  const item = activeItems.value
   if (!item || !renameName.value) return
   try {
     const fullName = renameExtension.value ? `${renameName.value}.${renameExtension.value}` : renameName.value
@@ -150,7 +159,6 @@ const handleRename = async () => {
   }
 }
 
-
 const handleRestore = async (item?: FileItem) => {
   const targets = item ? [item] : currentItems.value.filter(i => selectedFiles.value.has(i.id))
   try {
@@ -160,7 +168,6 @@ const handleRestore = async (item?: FileItem) => {
     toast.error(t('files.error.restoreFailed'))
   }
 }
-
 
 const handleMoveFile = async (payload: { sourceIds: string[], targetId: string | null }) => {
   if (payload.sourceIds.length === 0) return
@@ -177,7 +184,6 @@ const openMoveDialog = (item?: FileItem) => {
   if (activeItems.value.length > 0) showMoveDialog.value = true
 }
 
-
 const handleDownloadFile = async (item: FileItem) => {
   try {
     const apiBase = useApiBase()
@@ -192,7 +198,6 @@ const handleDownloadFile = async (item: FileItem) => {
     toast.error(t('files.error.downloadFailed'))
   }
 }
-
 
 const contextMenuRef = ref()
 const handleContextMenu = (event: MouseEvent, item: FileItem) => contextMenuRef.value?.open(event, item)
@@ -210,8 +215,7 @@ const handleContextMenuAction = (action: string, item: FileItem) => {
   }
 }
 
-
-watch(() => props.breadcrumbs, (newVal) => {
+watch(() => breadcrumbsModel.value, (newVal) => {
   if (!newVal || newVal.length <= 1) return
   const pathString = '/' + newVal.filter(i => i.id !== null).map(i => i.name).join('/')
   if (route.query.path !== pathString) router.replace({ query: { ...route.query, path: pathString } })
@@ -222,20 +226,20 @@ watch(() => props.breadcrumbs, (newVal) => {
   <div class="space-y-2 relative min-h-125 p-2" @dragenter.prevent="(e) => onGlobalDragEnter(e, readOnly)"
     @dragover.prevent @dragleave.prevent="onGlobalDragLeave" @drop.prevent="(e) => onGlobalDrop(e, readOnly)">
 
-    <FileExplorerToolbar :current-directory="currentDirectory" :breadcrumbs="breadcrumbs" :read-only="readOnly"
+    <FileExplorerToolbar :current-directory="currentDirectory" :breadcrumbs="breadcrumbsModel" :read-only="readOnly"
       :has-items="currentItems.length > 0" :is-trash="isTrash" @upload="(files: File[]) => handleUploadFiles(files)"
       @create-folder="openCreateFolderModal" @move="handleMoveFile" />
 
     <FileExplorerTable :items="sortedItems" :columns="activeColumns" :sort-field="sortField"
       :sort-direction="sortDirection" :selected-files="selectedFiles" :drop-target-id="dropTargetId"
-      :is-external-dragging="isExternalDragging" :read-only="readOnly" @toggle-sort="toggleSort"
+      :is-external-dragging="isExternalDragging" :read-only="readOnly" :is-loading="isLoading" @toggle-sort="toggleSort"
       @toggle-select-all="toggleSelectAll(currentItems)" @toggle-selection="toggleSelection"
       @contextmenu="handleContextMenu" @open="handleContextMenuAction('open', $event)" @dragstart="onRowDragStart"
       @dragover="onRowDragOver" @dragleave="dropTargetId = null" @drop="onRowDrop" />
 
 
     <Teleport to="body">
-      <div class="fixed -top-96 left-0 z-50 pointer-events-none p-3  shadow-lg">
+      <div class="fixed -top-96 left-0 z-50 pointer-events-none p-3 shadow-lg">
         <div ref="dragGhostRef"
           class="flex items-center gap-3 bg-white dark:bg-neutral-800 dark:text-neutral-200 p-1 rounded-xl border border-black/5 dark:border-neutral-700 w-56">
           <div class="shrink-0 p-1.5 bg-primary-50 dark:bg-zinc-900 rounded-md">

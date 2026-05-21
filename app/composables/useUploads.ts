@@ -27,8 +27,15 @@ export const useUploads = () => {
   const uploads = useState("uploads", () => [] as UploadItem[]);
   const apiBase = useApiBase();
   const { fetchQuota, usage, limit } = useQuota();
-  const { fetchFiles, currentParentID } = useFiles();
-  const route = useRoute();
+
+  // Event hook: subscribers get notified when an upload completes
+  const onUploadCompleteCallbacks: Array<(parentID: string | null) => void> = [];
+  const onUploadComplete = (cb: (parentID: string | null) => void) => {
+    onUploadCompleteCallbacks.push(cb);
+  };
+  const notifyUploadComplete = (parentID: string | null) => {
+    onUploadCompleteCallbacks.forEach(cb => cb(parentID));
+  };
 
   const addUpload = (file: File) => {
     const id = Math.random().toString(36).substring(7);
@@ -139,13 +146,7 @@ export const useUploads = () => {
           if (xhr.status >= 200 && xhr.status < 300) {
             updateUpload(id, { progress: 100, status: "completed" });
             fetchQuota();
-
-            const isExplorerPage = ["index", "files-path"].includes(
-              route.name as string,
-            );
-            if (isExplorerPage && currentParentID.value === parentID) {
-              fetchFiles(parentID);
-            }
+            notifyUploadComplete(parentID);
 
             setTimeout(() => {
               removeUpload(id);
@@ -187,8 +188,45 @@ export const useUploads = () => {
           reject(new Error("networkError"));
         };
 
-        updateUpload(id, { status: "uploading" });
-        xhr.send(file);
+        const executeRequest = async () => {
+          if (import.meta.env.DEV) {
+            const { networkDelay, slowUploads, forceError, simulate401 } = useDevConfig();
+            
+            if (networkDelay.value > 0) {
+              await new Promise(r => setTimeout(r, networkDelay.value));
+            }
+            if (slowUploads.value) {
+              await new Promise(r => setTimeout(r, 2000));
+            }
+            
+            if (forceError.value) {
+              forceError.value = false;
+              updateUpload(id, { status: "error", error: "upload.error.unknown" });
+              reject(new Error("Forced 500 from DevMenu"));
+              return;
+            }
+            
+            if (simulate401.value) {
+              simulate401.value = false;
+              if (!isRetry) {
+                const { handle401 } = useTokenRefresh();
+                const refreshed = await handle401();
+                if (refreshed) {
+                  startXhr(true);
+                  return;
+                }
+              }
+              updateUpload(id, { status: "error", error: "upload.error.unauthorized" });
+              reject(new Error("upload.error.unauthorized"));
+              return;
+            }
+          }
+
+          updateUpload(id, { status: "uploading" });
+          xhr.send(file);
+        };
+
+        executeRequest();
       };
       startXhr();
     });
@@ -399,13 +437,7 @@ export const useUploads = () => {
 
       updateUpload(id, { progress: 100, status: "completed" });
       fetchQuota();
-
-      const isExplorerPage = ["index", "files-path"].includes(
-        route.name as string,
-      );
-      if (isExplorerPage && currentParentID.value === parentID) {
-        fetchFiles(parentID);
-      }
+      notifyUploadComplete(parentID);
 
       setTimeout(() => {
         removeUpload(id);
@@ -502,7 +534,42 @@ export const useUploads = () => {
           reject(new Error("Network error during chunk upload"));
         };
 
-        xhr.send(chunk);
+        const executeRequest = async () => {
+          if (import.meta.env.DEV) {
+            const { networkDelay, slowUploads, forceError, simulate401 } = useDevConfig();
+
+            if (networkDelay.value > 0) {
+              await new Promise(r => setTimeout(r, networkDelay.value));
+            }
+            if (slowUploads.value) {
+              await new Promise(r => setTimeout(r, 2000));
+            }
+
+            if (forceError.value) {
+              forceError.value = false;
+              reject(new Error("Forced 500 from DevMenu"));
+              return;
+            }
+
+            if (simulate401.value) {
+              simulate401.value = false;
+              if (!isRetry) {
+                const { handle401 } = useTokenRefresh();
+                const refreshed = await handle401();
+                if (refreshed) {
+                  startXhr(true);
+                  return;
+                }
+              }
+              reject(new Error(`Chunk upload failed: 401`));
+              return;
+            }
+          }
+
+          xhr.send(chunk);
+        };
+
+        executeRequest();
       };
       startXhr();
     });
@@ -532,5 +599,6 @@ export const useUploads = () => {
     uploads,
     uploadFile,
     removeUpload,
+    onUploadComplete,
   };
 };

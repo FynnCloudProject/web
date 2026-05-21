@@ -1,142 +1,112 @@
-import type {
-  FileItem,
-  BreadcrumbItem,
-  ApiFile,
-  FileIndexDTO,
-} from "~/types/file";
+import { ref, onUnmounted } from "vue";
+import type { FileItem, BreadcrumbItem, FileIndexDTO } from "~/types/file";
+import { fileApi, mapFile, mapFiles } from "~/services/fileApi";
 
-const mapFiles = (rawFiles: ApiFile[]): FileItem[] => {
-  return rawFiles.map((f) => mapFile(f));
-};
-
-const mapFile = (f: ApiFile): FileItem => ({
-  owner: f.owner,
-  parent: f.parent,
-  id: f.id,
-  name: f.filename,
-  type: determineFileType(f),
-  size: f.isDirectory ? undefined : formatSize(f.size),
-  sizeBytes: f.size,
-  lastModified: f.lastModified ? new Date(f.lastModified) : null,
-  updatedAt: new Date(f.updatedAt),
-  createdAt: new Date(f.createdAt),
-  deletedAt: f.deletedAt ? new Date(f.deletedAt) : null,
-  isFavorite: f.isFavorite,
-  isShared: f.isShared,
-  isRecent: f.isRecent,
-});
+export type FileManager = ReturnType<typeof useFiles>;
 
 export const useFiles = () => {
-  // const config = useRuntimeConfig()
   const router = useRouter();
   const { fetchQuota } = useQuota();
+  const { t } = useI18n();
 
-  const files = useState<FileItem[]>("files_list", () => []);
-  const currentParentID = useState<string | null>(
-    "files_currentParentID",
-    () => null,
-  );
-  const breadcrumbs = useState<BreadcrumbItem[]>("files_breadcrumbs", () => []);
+  // Local isolated state for this instance
+  const files = ref<FileItem[]>([]);
+  const currentParentID = ref<string | null>(null);
+  const breadcrumbs = ref<BreadcrumbItem[]>([]);
 
-  const isLoading = useState<boolean>("files_isLoading", () => false);
-  const error = useState<string | null>("files_error", () => null);
+  const isLoading = ref<boolean>(false);
+  const error = ref<string | null>(null);
+
+  // Scoped strictly to this instance of the composable
+  let fetchController: AbortController | null = null;
+  
+  const lastFetch = ref<{ fn: () => Promise<FileIndexDTO>, fallbackBreadcrumbs?: BreadcrumbItem[] } | null>(null);
 
   const executeFetch = async (
-    endpoint: string,
-    params: any = {},
-    customBreadcrumbs?: BreadcrumbItem[],
+    apiFn: () => Promise<FileIndexDTO>,
+    fallbackBreadcrumbs?: BreadcrumbItem[],
+    silent: boolean = false
   ) => {
-    isLoading.value = true;
+    lastFetch.value = { fn: apiFn, fallbackBreadcrumbs };
+
+    if (fetchController) {
+      fetchController.abort();
+    }
+    fetchController = new AbortController();
+
+    if (fallbackBreadcrumbs) {
+      breadcrumbs.value = fallbackBreadcrumbs;
+    }
+
+    if (!silent) {
+      isLoading.value = true;
+    }
     error.value = null;
+
     try {
-      const data = await useApi<FileIndexDTO>(endpoint, { params });
+      const data = await apiFn();
 
       files.value = mapFiles(data.files);
-      console.log("useFiles: Fetched files", files.value);
       currentParentID.value = data.parentID || null;
 
-      let fetchedBreadcrumbs = data.breadcrumbs || [];
-
-      // If fetching trash, fix up the root crumb and build paths
-      if (endpoint === "/api/files/trash") {
-        if (
-          fetchedBreadcrumbs.length > 0 &&
-          fetchedBreadcrumbs[0].name === "Trash"
-        ) {
-          fetchedBreadcrumbs[0] = {
-            ...fetchedBreadcrumbs[0],
-            name: fetchedBreadcrumbs[0].name,
-            labelKey: "navigation.trash",
-            icon: "trash",
-            color: "red",
-          };
-        }
-
-        // Build flat paths for trash
-        fetchedBreadcrumbs = fetchedBreadcrumbs.map((crumb, index) => {
-          let path = "/trash";
-          if (index > 0 && crumb.id) {
-            path = `/trash/${crumb.id}`;
-          }
-          return {
-            ...crumb,
-            name: crumb.name,
-            path: path,
-          };
-        });
-      }
-
-      breadcrumbs.value = customBreadcrumbs || fetchedBreadcrumbs;
+      const fetchedBreadcrumbs = data.breadcrumbs || [];
+      breadcrumbs.value = fetchedBreadcrumbs.length > 0 ? fetchedBreadcrumbs : (fallbackBreadcrumbs || []);
 
       return data;
     } catch (e: any) {
+      if (e.name === "AbortError") return;
       error.value = e.data?.message || e.message || "An error occurred";
       const status = e.statusCode || e.response?.status;
       if (status === 404 || status === 403) router.push("/");
       throw e;
     } finally {
-      isLoading.value = false;
+      if (fetchController?.signal.aborted === false) {
+        isLoading.value = false;
+      }
     }
   };
 
-  const fetchFiles = (parentID: string | null = null) =>
-    executeFetch("/api/files", parentID ? { parentID } : {});
+  onUnmounted(() => {
+    if (fetchController) {
+      fetchController.abort();
+    }
+  });
+
+  const fetchFiles = (parentID: string | null = null, initialBreadcrumbs?: BreadcrumbItem[]) =>
+    executeFetch(
+      () => fileApi.fetchIndex({ parentID }, fetchController!.signal),
+      !parentID && !initialBreadcrumbs ? [{ name: "Home", labelKey: "navigation.allFiles", path: "/", id: null }] : initialBreadcrumbs
+    );
 
   const fetchRecent = () =>
-    executeFetch("/api/files/recent", {}, [
-      {
-        name: "Recent",
-        labelKey: "navigation.recentFiles",
-        icon: "clock",
-        id: null,
-        path: "/recent",
-      },
-    ]);
+    executeFetch(
+      () => fileApi.fetchRecent(fetchController!.signal),
+      [{ name: "Recent", labelKey: "navigation.recentFiles", icon: "clock", id: null, path: "/recent" }]
+    );
 
   const fetchFavorites = () =>
-    executeFetch("/api/files/favorites", {}, [
-      {
-        name: "Favorites",
-        labelKey: "navigation.favoriteFiles",
-        icon: "star",
-        id: null,
-        path: "/favorites",
-      },
-    ]);
+    executeFetch(
+      () => fileApi.fetchFavorites(fetchController!.signal),
+      [{ name: "Favorites", labelKey: "navigation.favoriteFiles", icon: "star", id: null, path: "/favorites" }]
+    );
 
   const fetchShared = () =>
-    executeFetch("/api/files/shared", {}, [
-      {
-        name: "Shared",
-        labelKey: "navigation.sharedFiles",
-        icon: "share",
-        id: null,
-        path: "/shared",
-      },
-    ]);
+    executeFetch(
+      () => fileApi.fetchShared(fetchController!.signal),
+      [{ name: "Shared", labelKey: "navigation.sharedFiles", icon: "share", id: null, path: "/shared" }]
+    );
 
-  const fetchTrash = (parentID: string | null = null) =>
-    executeFetch("/api/files/trash", parentID ? { parentID } : {});
+  const fetchTrash = (parentID: string | null = null, initialBreadcrumbs?: BreadcrumbItem[]) =>
+    executeFetch(
+      () => fileApi.fetchTrash({ parentID }, fetchController!.signal),
+      !parentID && !initialBreadcrumbs ? [{ name: "Trash", labelKey: "navigation.trash", icon: "trash", path: "/trash", id: null }] : initialBreadcrumbs
+    );
+
+  const refresh = async () => {
+    if (lastFetch.value) {
+      return executeFetch(lastFetch.value.fn, lastFetch.value.fallbackBreadcrumbs, true);
+    }
+  };
 
   const updateFileInState = (updatedFile: FileItem) => {
     const index = files.value.findIndex((f) => f.id === updatedFile.id);
@@ -157,17 +127,14 @@ export const useFiles = () => {
     name: string,
     parentID: string | null = currentParentID.value,
   ): Promise<FileItem> => {
-    const apiFile = await useApi<ApiFile>(`/api/files/create-directory`, {
-      method: "POST",
-      body: { name, parentID },
-    });
+    const apiFile = await fileApi.createFolder(name, parentID);
     const newFile = mapFile(apiFile);
     addFileToState(newFile);
     return newFile;
   };
 
   const deleteFile = async (id: string) => {
-    await useApi(`/api/files/${id}`, { method: "DELETE" });
+    await fileApi.deleteFile(id);
     removeFileFromState(id);
   };
 
@@ -176,7 +143,7 @@ export const useFiles = () => {
   };
 
   const deleteFilePermanently = async (id: string, shouldFetchQuota = true) => {
-    await useApi(`/api/files/${id}/permanent-delete`, { method: "DELETE" });
+    await fileApi.deletePermanently(id);
     removeFileFromState(id);
     if (shouldFetchQuota) fetchQuota();
   };
@@ -190,56 +157,45 @@ export const useFiles = () => {
     fileID: string,
     targetParentID: string | null,
   ): Promise<FileItem> => {
-    const apiFile = await useApi<ApiFile>(`/api/files/move-file`, {
-      method: "POST",
-      body: { fileID, parentID: targetParentID },
-    });
+    const apiFile = await fileApi.moveFile(fileID, targetParentID);
     const updatedFile = mapFile(apiFile);
     removeFileFromState(fileID);
     return updatedFile;
   };
 
   const renameFile = async (id: string, name: string): Promise<FileItem> => {
-    const apiFile = await useApi<ApiFile>(`/api/files/${id}`, {
-      method: "PATCH",
-      body: { name },
-    });
+    const apiFile = await fileApi.renameFile(id, name);
     const updatedFile = mapFile(apiFile);
     updateFileInState(updatedFile);
     return updatedFile;
   };
 
   const restoreFile = async (id: string): Promise<FileItem> => {
-    const apiFile = await useApi<ApiFile>(`/api/files/${id}/restore`, {
-      method: "POST",
-    });
+    const apiFile = await fileApi.restoreFile(id);
     const restoredFile = mapFile(apiFile);
     removeFileFromState(id);
     return restoredFile;
   };
 
   const toggleFavorite = async (id: string): Promise<FileItem> => {
-    const apiFile = await useApi<ApiFile>(`/api/files/${id}/favorite`, {
-      method: "POST",
-    });
+    const apiFile = await fileApi.toggleFavorite(id);
     const updatedFile = mapFile(apiFile);
     updateFileInState(updatedFile);
     return updatedFile;
   };
 
   const getDeleteDescription = (items: FileItem[], isTrash: boolean) => {
-    const { t } = useI18n();
     const count = items.length;
     if (isTrash) {
       if (count === 1)
         return t("files.actions.deletePermanent.descriptionSingle", {
-          name: items[0]?.name,
+          name: items?.name,
         });
       return t("files.actions.deletePermanent.descriptionMultiple", { count });
     }
     if (count === 1)
       return t("files.actions.delete.descriptionSingle", {
-        name: items[0]?.name,
+        name: items?.name,
       });
     return t("files.actions.delete.descriptionMultiple", { count });
   };
@@ -256,6 +212,7 @@ export const useFiles = () => {
     fetchFavorites,
     fetchShared,
     fetchTrash,
+    refresh,
     createFolder,
     deleteFile,
     deleteFiles,

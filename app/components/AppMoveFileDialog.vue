@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, computed } from 'vue'
-import type { FileItem, BreadcrumbItem, FileIndexDTO } from '~/types/file'
+import type { FileItem, BreadcrumbItem } from '~/types/file'
+import { fileApi, mapFiles } from '~/services/fileApi'
 import AppDialog from './AppDialog.vue'
 
 const props = defineProps<{
@@ -16,7 +17,6 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
-const config = useRuntimeConfig()
 
 // Local state for the dialog's file explorer
 const currentFolderId = ref<string | null>(null)
@@ -27,15 +27,13 @@ const error = ref<string | null>(null)
 
 // Computed
 const canMoveHere = computed(() => {
-    // Can't move into itself or children (simple check: if only one item and it matches current folder)
-    // Check that were not in same directory as the items we want to move
     if (props.items.some(item => item.id === currentFolderId.value)) return false
     if (props.items.some(item => item.parent.id === currentFolderId.value)) return false
     return true
 })
 
 const currentFolderName = computed(() => {
-    if (!currentFolderId.value) return t('navigation.allFiles') // "root"
+    if (!currentFolderId.value) return t('navigation.allFiles')
     const last = breadcrumbs.value[breadcrumbs.value.length - 1]
     return last ? last.name : t('navigation.allFiles')
 })
@@ -49,35 +47,10 @@ const fetchFolders = async (parentId: string | null) => {
     isLoading.value = true
     error.value = null
     try {
-        const apiBase = useApiBase()
-        const data = await useApi<FileIndexDTO>(`${apiBase}/api/files`, {
-            params: { parentID: parentId }
-        })
-
-        // We only want folders
-        folders.value = data.files.filter((f: any) => f.isDirectory).map((f: any) => ({
-            owner: {
-                id: f.owner.id,
-            },
-            parent: {
-                id: f.parent.id,
-            },
-            id: f.id,
-            name: f.filename,
-            type: 'folder',
-            sizeBytes: f.size,
-            lastModified: f.lastModified ? new Date(f.lastModified) : null,
-            updatedAt: new Date(f.updatedAt),
-            createdAt: new Date(f.createdAt),
-            deletedAt: f.deletedAt ? new Date(f.deletedAt) : null,
-            isFavorite: f.isFavorite,
-            isShared: f.isShared,
-            isRecent: f.isRecent,
-        }))
-
+        const data = await fileApi.fetchIndex({ parentID: parentId })
+        folders.value = mapFiles(data.files).filter(f => f.type === 'folder')
         breadcrumbs.value = data.breadcrumbs || []
         currentFolderId.value = data.parentID || null
-
     } catch (e: any) {
         error.value = e.message || 'Failed to load folders'
     } finally {
@@ -134,14 +107,7 @@ const close = () => {
                 <!-- Loading Overlay to prevent layout shifts -->
                 <div v-if="isLoading"
                     class="absolute inset-0 bg-white/50 dark:bg-neutral-900/50 z-10 flex items-start justify-center pt-10 backdrop-blur-sm transition-opacity duration-200">
-                    <svg class="animate-spin h-6 w-6 text-primary-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                        viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
+                    <AppSpinner />
                 </div>
 
 
