@@ -21,7 +21,7 @@ const ERROR_MAP: Record<number, string> = {
 
 const CHUNKED_UPLOAD_THRESHOLD = 30 * 1024 * 1024;
 const MAX_RETRIES = 3;
-const MAX_CONCURRENT_CHUNKS = 5;
+const MAX_CONCURRENT_FILES = 3;
 
 export const useUploads = () => {
   const uploads = useState("uploads", () => [] as UploadItem[]);
@@ -232,33 +232,6 @@ export const useUploads = () => {
     });
   };
 
-  const executeWithConcurrency = async <T>(
-    tasks: Array<() => Promise<T>>,
-    maxConcurrency: number,
-  ): Promise<T[]> => {
-    const results: T[] = [];
-    const executing: Promise<void>[] = [];
-
-    for (const task of tasks) {
-      const promise = task().then((result) => {
-        results.push(result);
-        const index = executing.indexOf(promise);
-        if (index > -1) {
-          executing.splice(index, 1);
-        }
-      });
-
-      executing.push(promise);
-
-      if (executing.length >= maxConcurrency) {
-        await Promise.race(executing);
-      }
-    }
-
-    await Promise.all(executing);
-    return results;
-  };
-
   const uploadFileChunked = async (
     file: File,
     parentID: string | null = null,
@@ -368,58 +341,51 @@ export const useUploads = () => {
         }
       };
 
-      const chunkTasks = Array.from({ length: totalChunks }, (_, index) => {
+      // Upload chunks sequentially for optimal throughput
+      for (let index = 0; index < totalChunks; index++) {
         const partNumber = index + 1;
         const start = index * maxChunkSize;
         const end = Math.min(start + maxChunkSize, file.size);
         const chunk = file.slice(start, end);
 
-        return async () => {
-          let retryCount = 0;
-          let partInfo: {
-            partNumber: number;
-            etag: string;
-            size: number;
-          } | null = null;
+        let retryCount = 0;
+        let partInfo: {
+          partNumber: number;
+          etag: string;
+          size: number;
+        } | null = null;
 
-          while (!partInfo && retryCount < MAX_RETRIES) {
-            try {
-              partInfo = await uploadChunk(
-                sessionID!,
-                partNumber,
-                chunk,
-                uploadToken!,
-                (loaded) => {
-                  // Update this chunk's loaded bytes
-                  progressState.loadedByChunk[index] = loaded;
-                  // Trigger centralized progress update
-                  updateProgress();
-                },
-              );
+        while (!partInfo && retryCount < MAX_RETRIES) {
+          try {
+            partInfo = await uploadChunk(
+              sessionID!,
+              partNumber,
+              chunk,
+              uploadToken!,
+              (loaded) => {
+                progressState.loadedByChunk[index] = loaded;
+                updateProgress();
+              },
+            );
 
-              completedParts.push(partInfo);
-              uploadedChunksCount.value++;
+            completedParts.push(partInfo);
+            uploadedChunksCount.value++;
 
-              updateUpload(id, {
-                uploadedChunks: uploadedChunksCount.value,
-                status: "uploading",
-              });
-            } catch (error) {
-              retryCount++;
-              if (retryCount >= MAX_RETRIES) {
-                throw error;
-              }
-              await new Promise((resolve) =>
-                setTimeout(resolve, Math.pow(2, retryCount) * 1000),
-              );
+            updateUpload(id, {
+              uploadedChunks: uploadedChunksCount.value,
+              status: "uploading",
+            });
+          } catch (error) {
+            retryCount++;
+            if (retryCount >= MAX_RETRIES) {
+              throw error;
             }
+            await new Promise((resolve) =>
+              setTimeout(resolve, Math.pow(2, retryCount) * 1000),
+            );
           }
-
-          return partInfo!;
-        };
-      });
-
-      await executeWithConcurrency(chunkTasks, MAX_CONCURRENT_CHUNKS);
+        }
+      }
 
       updateUpload(id, { status: "processing" });
 
@@ -583,21 +549,44 @@ export const useUploads = () => {
 
   const uploadFile = async (file: File, parentID: string | null = null) => {
     if (file.size >= CHUNKED_UPLOAD_THRESHOLD) {
-      console.log(
-        `Using parallel chunked upload for ${file.name} (${file.size} bytes)`,
-      );
       return uploadFileChunked(file, parentID);
     } else {
-      console.log(
-        `Using single-request upload for ${file.name} (${file.size} bytes)`,
-      );
       return uploadFileSingleRequest(file, parentID);
     }
   };
 
+  // Global upload queue: limits concurrent file uploads
+  const uploadQueue: Array<() => Promise<void>> = [];
+  let activeUploads = 0;
+
+  const processQueue = () => {
+    while (activeUploads < MAX_CONCURRENT_FILES && uploadQueue.length > 0) {
+      const task = uploadQueue.shift()!;
+      activeUploads++;
+      task().finally(() => {
+        activeUploads--;
+        processQueue();
+      });
+    }
+  };
+
+  const queueUpload = (file: File, parentID: string | null = null) => {
+    return new Promise<void>((resolve, reject) => {
+      uploadQueue.push(async () => {
+        try {
+          await uploadFile(file, parentID);
+          resolve();
+        } catch (error) {
+          reject(error);
+        }
+      });
+      processQueue();
+    });
+  };
+
   return {
     uploads,
-    uploadFile,
+    uploadFile: queueUpload,
     removeUpload,
     onUploadComplete,
   };
