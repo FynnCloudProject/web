@@ -1,14 +1,15 @@
 <script setup lang="ts">
-const { files, fetchRecent, breadcrumbs } = useFiles()
-
 const { t } = useI18n()
+
+const fileManager = useFiles()
+
 useHead({
     title: t('navigation.recentFiles')
 })
 
-await fetchRecent()
+fileManager.fetchRecent()
 </script>
 
 <template>
-    <FileExplorer :path="[]" :items="files" :read-only="true" :refresh="fetchRecent" :breadcrumbs="breadcrumbs" />
+    <FileExplorer :manager="fileManager" :read-only="true" />
 </template>

@@ -70,9 +70,7 @@ onMounted(() => {
                         <div
                             class="flex-1 relative bg-gray-100 dark:bg-neutral-950 flex items-center justify-center overflow-hidden">
                             <div v-if="isLoading" class="flex flex-col items-center gap-3">
-                                <div
-                                    class="animate-spin rounded-full h-10 w-10 border-4 border-gray-300 dark:border-neutral-700 border-t-primary-500">
-                                </div>
+                                <AppSpinner size="lg" />
                                 <p class="text-gray-500 dark:text-gray-400 font-medium">Loading PDF...</p>
                             </div>
 

@@ -5,6 +5,7 @@ import FileBreadcrumbItem from './FileBreadcrumbItem.vue'
 const props = defineProps<{
     items: BreadcrumbItem[]
     preventNavigation?: boolean
+    isTrash?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -75,7 +76,7 @@ const getItemTo = (item: BreadcrumbItem, index: number) => {
     if (!item.id && !item.path) return '/'
     return item.path
         ? item.path
-        : { path: `/files/${item.id}`, query: { path: getPathForIndex(index) } }
+        : { path: props.isTrash ? `/trash/${item.id}` : `/files/${item.id}`, query: { path: getPathForIndex(index) } }
 }
 
 // Auto-scroll logic

@@ -1,15 +1,15 @@
 <script setup lang="ts">
-const { files, fetchFavorites, breadcrumbs } = useFiles()
-
 const { t } = useI18n()
+
+const fileManager = useFiles()
+
 useHead({
     title: t('navigation.favoriteFiles')
 })
 
-
-await fetchFavorites()
+fileManager.fetchFavorites()
 </script>
 
 <template>
-    <FileExplorer :path="[]" :items="files" :read-only="true" :refresh="fetchFavorites" :breadcrumbs="breadcrumbs" />
+    <FileExplorer :manager="fileManager" />
 </template>

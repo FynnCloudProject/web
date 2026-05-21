@@ -1,14 +1,15 @@
 <script setup lang="ts">
-const { files, fetchShared, breadcrumbs } = useFiles()
-
 const { t } = useI18n()
+
+const fileManager = useFiles()
+
 useHead({
     title: t('navigation.sharedFiles')
 })
 
-await fetchShared()
+fileManager.fetchShared()
 </script>
 
 <template>
-    <FileExplorer :path="[]" :items="files" :read-only="true" :refresh="fetchShared" :breadcrumbs="breadcrumbs" />
+    <FileExplorer :manager="fileManager" :read-only="true" />
 </template>

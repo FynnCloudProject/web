@@ -24,7 +24,7 @@ const { t } = useI18n()
 
 // Helper to determine if we should show the icon-only version
 const isIconOnly = computed(() => {
-    return !props.item.id && ((!props.item.labelKey || props.item.labelKey === 'navigation.allFiles') || props.item.icon)
+    return !!props.item.icon || props.item.labelKey === 'navigation.allFiles' || (!props.item.id && props.index === 0)
 })
 
 // Shared class computations

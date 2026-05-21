@@ -1,17 +1,15 @@
 <script setup lang="ts">
-
-const { files, fetchFiles, breadcrumbs } = useFiles()
-
 const { t } = useI18n()
+
+const fileManager = useFiles()
 
 useHead({
   title: t('navigation.allFiles')
 })
 
-// Fetch root files
-await fetchFiles()
+fileManager.fetchFiles()
 </script>
 
 <template>
-  <FileExplorer :path="[]" :items="files" :refresh="fetchFiles" :breadcrumbs="breadcrumbs" />
+  <FileExplorer :manager="fileManager" />
 </template>

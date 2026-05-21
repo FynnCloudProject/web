@@ -3,7 +3,7 @@ import { ref } from 'vue'
 
 const { networkDelay, isDevMenuOpen, forceError, simulate401, slowUploads, debugUI } = useDevConfig()
 const { isOffline } = useBackEndConfig()
-const isDev = import.meta.dev
+const isDev = import.meta.env.DEV
 
 const toggleMenu = () => {
     isDevMenuOpen.value = !isDevMenuOpen.value

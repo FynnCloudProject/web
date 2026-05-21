@@ -2,8 +2,10 @@
 withDefaults(defineProps<{
     /** Size of the spinner: 'sm' (20px), 'md' (24px), 'lg' (40px) */
     size?: 'sm' | 'md' | 'lg'
+    color?: string
 }>(), {
     size: 'md',
+    color: 'text-primary-500'
 })
 
 const sizeClasses = {
@@ -14,7 +16,7 @@ const sizeClasses = {
 </script>
 
 <template>
-    <svg class="animate-spin text-primary-500" :class="sizeClasses[size]" xmlns="http://www.w3.org/2000/svg" fill="none"
+    <svg class="animate-spin" :class="[sizeClasses[size], color]" xmlns="http://www.w3.org/2000/svg" fill="none"
         viewBox="0 0 24 24">
         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" />
         <path class="opacity-75" fill="currentColor"

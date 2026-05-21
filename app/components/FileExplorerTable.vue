@@ -10,6 +10,7 @@ const props = defineProps<{
     dropTargetId: string | null
     isExternalDragging: boolean
     readOnly: boolean
+    isLoading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -32,14 +33,13 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
 
 <template>
     <div class="w-full relative">
-        <table v-if="items.length > 0"
-            class="min-w-full divide-y-0 border-separate border-spacing-y-1 bg-white dark:bg-neutral-800/80 rounded-2xl px-2 pb-1.25">
+        <table class="min-w-full divide-y-0 border-separate border-spacing-y-1 bg-white dark:bg-neutral-800/80 rounded-2xl px-2 pb-1.25">
             <thead>
                 <tr>
                     <!-- Static columns -->
                     <th scope="col" class="px-6 py-2 text-left w-10">
                         <AppCheckbox :model-value="isAllSelected" :indeterminate="isIndeterminate"
-                            @change="emit('toggleSelectAll')" />
+                            @change="emit('toggleSelectAll')" :disabled="isLoading" />
                     </th>
 
                     <th scope="col"
@@ -70,24 +70,37 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
                 </tr>
             </thead>
             <tbody>
-                <FileRow v-for="(item, index) in items" :key="item.id" :item="item" :columns="columns"
-                    :selected="selectedFiles.has(item.id)" :is-drop-target="dropTargetId === item.id"
-                    :is-first="index === 0" :is-last="index === items.length - 1"
-                    @dragstart="emit('dragstart', $event, item)" @dragover="emit('dragover', $event, item)"
-                    @dragleave="emit('dragleave')" @drop="emit('drop', $event, item)"
-                    @toggle-select="emit('toggleSelection', item.id)" @contextmenu="emit('contextmenu', $event, item)"
-                    @open="emit('open', item)" />
+                <tr v-if="isLoading">
+                    <td :colspan="2 + columns.length" class="py-32">
+                        <div class="flex flex-col items-center justify-center text-gray-400">
+                            <AppSpinner size="lg" />
+                        </div>
+                    </td>
+                </tr>
+                <tr v-else-if="items.length === 0">
+                    <td :colspan="2 + columns.length" class="py-20">
+                        <div class="flex flex-col items-center justify-center text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-16 h-16 mb-4 opacity-50">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
+                            </svg>
+                            <p class="text-lg font-medium">{{ t('files.empty') }}</p>
+                            <p v-if="!readOnly" class="text-sm">{{ t('files.dragAndDropHint') }}</p>
+                        </div>
+                    </td>
+                </tr>
+                <template v-else>
+                    <FileRow v-for="(item, index) in items" :key="item.id" :item="item" :columns="columns"
+                        :selected="selectedFiles.has(item.id)" :is-drop-target="dropTargetId === item.id"
+                        :is-first="index === 0" :is-last="index === items.length - 1"
+                        @dragstart="emit('dragstart', $event, item)" @dragover="emit('dragover', $event, item)"
+                        @dragleave="emit('dragleave')" @drop="emit('drop', $event, item)"
+                        @toggle-select="emit('toggleSelection', item.id)" @contextmenu="emit('contextmenu', $event, item)"
+                        @open="emit('open', item)" />
+                </template>
             </tbody>
         </table>
-        <div v-else class="flex flex-col items-center justify-center py-20 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                stroke="currentColor" class="w-16 h-16 mb-4 opacity-50">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                    d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-            </svg>
-            <p class="text-lg font-medium">{{ t('files.empty') }}</p>
-            <p v-if="!readOnly" class="text-sm">{{ t('files.dragAndDropHint') }}</p>
-        </div>
         <div v-if="isExternalDragging"
             class="absolute inset-0 z-50 bg-primary-50/25 border-2 border-primary-500 border-dashed rounded-xl flex flex-col items-center justify-center pointer-events-none backdrop-blur-xs max-h-[calc(100vh-10rem)]">
             <p class="text-xl font-semibold text-primary-700">{{ t('files.dragAndDrop') }}</p>

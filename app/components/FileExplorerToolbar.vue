@@ -44,7 +44,7 @@ const handleMoveFile = (payload: { sourceIds: string[], targetId: string | null 
                 class="text-4xl font-medium text-gray-900 dark:text-gray-100 max-w-full overflow-hidden text-ellipsis whitespace-nowrap">
                 {{ currentDirectory }}
             </h1>
-            <FileBreadcrumbs :items="breadcrumbs" class="-ml-1 -mb-1.5" @move="handleMoveFile" />
+            <FileBreadcrumbs :items="breadcrumbs" :is-trash="isTrash" class="-ml-1 -mb-1.5" @move="handleMoveFile" />
         </div>
         <div class="flex flex-col items-end justify-end gap-2 self-end">
             <div class="flex flex-row items-center gap-2">
@@ -61,7 +61,7 @@ const handleMoveFile = (payload: { sourceIds: string[], targetId: string | null 
             </div>
 
             <!-- Column Toggle -->
-            <div v-if="hasItems || breadcrumbs.length > 1" class="relative z-20 float-right">
+            <div class="relative z-20 float-right">
                 <AppButton @click="showColumnMenu = !showColumnMenu" rounded="rounded-xl" variant="canvas"
                     border-class="border border-gray-300 dark:border-none" textColor="text-primary-700 dark:text-white"
                     :text-shadow="false" icon="lucide:columns-3-cog" />

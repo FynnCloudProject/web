@@ -67,7 +67,9 @@ export const useAuth = () => {
     });
 
     user.value = userData;
-    navigateTo(route.query.redirect?.toString() || "/");
+    const redirect = route.query.redirect?.toString();
+    const safeRedirect = redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
+    navigateTo(safeRedirect);
   };
 
   const logout = async () => {

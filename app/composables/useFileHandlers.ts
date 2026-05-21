@@ -9,8 +9,17 @@ export const useFileHandlers = () => {
   const getNavigatePath = (item: FileItem) => {
     if (item.type !== "folder") return undefined;
     if (item.deletedAt) {
+      const currentPathQuery = (route.query.path as string) || "";
+      const newPath = currentPathQuery.endsWith("/")
+        ? currentPathQuery + item.name
+        : currentPathQuery + "/" + item.name;
+
       return {
         path: `/trash/${item.id}`,
+        query: {
+          ...route.query,
+          path: newPath,
+        },
       };
     }
 

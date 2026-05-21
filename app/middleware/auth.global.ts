@@ -20,8 +20,12 @@ export default defineNuxtRouteMiddleware(async (to, from) => {
   // If not authenticated and trying to access a protected route, redirect to login
   if (!user.value && !isPublicRoute) {
     if (import.meta.client) {
+      // Only allow relative paths that don't start with // (prevent open redirect)
+      const redirect = to.fullPath.startsWith('/') && !to.fullPath.startsWith('//')
+        ? to.fullPath
+        : '/';
       return navigateTo(
-        "/auth/login?redirect=" + encodeURIComponent(to.fullPath),
+        "/auth/login?redirect=" + encodeURIComponent(redirect),
       );
     }
   }

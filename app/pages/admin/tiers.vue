@@ -153,7 +153,7 @@ const executeDeletion = async () => {
         </div>
 
         <div v-if="loading" class="flex justify-center py-20">
-            <Icon name="heroicons:arrow-path-20-solid" class="w-6 h-6 animate-spin text-gray-400" />
+            <AppSpinner color="text-gray-400" />
         </div>
 
         <div v-else
