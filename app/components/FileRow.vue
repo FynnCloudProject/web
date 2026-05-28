@@ -3,6 +3,7 @@ import type { FileItem, ColumnDefinition } from '~/types/file'
 import FileIcon from './FileIcon.vue'
 
 const { t, d, locale } = useI18n()
+const { showUUIDs } = useDevConfig()
 
 const props = defineProps<{
     item: FileItem
@@ -108,6 +109,10 @@ const formatDate = (date: Date | undefined) => {
                     <span v-else class="truncate block font-medium tracking-tight"
                         :class="selected ? 'text-primary-50 drop-shadow-md' : 'text-gray-700 dark:text-zinc-300 dark:group-hover:text-zinc-50'">
                         {{ item.name }}
+                    </span>
+                    <span v-if="showUUIDs" class="truncate block text-[10px] font-mono opacity-60"
+                        :class="selected ? 'text-primary-100' : 'text-gray-400 dark:text-zinc-500'">
+                        {{ item.id }}
                     </span>
                 </div>
             </div>
