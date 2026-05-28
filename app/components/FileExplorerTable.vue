@@ -11,6 +11,8 @@ const props = defineProps<{
     isExternalDragging: boolean
     readOnly: boolean
     isLoading?: boolean
+    isLoadingMore?: boolean
+    hasMore?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -23,16 +25,66 @@ const emit = defineEmits<{
     dragover: [event: DragEvent, item: FileItem]
     dragleave: []
     drop: [event: DragEvent, item: FileItem]
+    loadMore: []
 }>()
 
 const { t } = useI18n()
 
 const isAllSelected = computed(() => props.items.length > 0 && props.selectedFiles.size === props.items.length)
 const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.selectedFiles.size < props.items.length)
+
+// Infinite scroll with IntersectionObserver
+const sentinelRef = ref<HTMLElement | null>(null)
+
+onMounted(() => {
+    const observer = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting && props.hasMore && !props.isLoadingMore) {
+            emit('loadMore')
+        }
+    }, { rootMargin: '200px' })
+
+    watch(sentinelRef, (el, oldEl) => {
+        if (oldEl) observer.unobserve(oldEl)
+        if (el) observer.observe(el)
+    }, { immediate: true })
+
+    onUnmounted(() => observer.disconnect())
+})
+
+// Animated height on tbody swap
+const containerRef = ref<HTMLElement | null>(null)
+let lockedHeight = 0
+
+function onBeforeLeave() {
+    const container = containerRef.value
+    if (!container) return
+    lockedHeight = container.offsetHeight
+    container.style.height = `${lockedHeight}px`
+    container.style.overflow = 'hidden'
+}
+
+function onEnter() {
+    const container = containerRef.value
+    if (!container) return
+    const table = container.querySelector('table')
+    const targetHeight = table ? table.offsetHeight : lockedHeight
+    void container.offsetHeight // force reflow
+    container.style.transition = 'height 300ms cubic-bezier(0.16, 1, 0.3, 1)'
+    container.style.height = `${targetHeight}px`
+}
+
+function onAfterEnter() {
+    const container = containerRef.value
+    if (!container) return
+    container.style.transition = ''
+    container.style.height = ''
+    container.style.overflow = ''
+}
 </script>
 
 <template>
-    <div class="w-full relative">
+    <div class="w-full relative min-h-80">
+        <div ref="containerRef" class="bg-white dark:bg-neutral-800/80 rounded-2xl">
         <table class="min-w-full divide-y-0 border-separate border-spacing-y-1 bg-white dark:bg-neutral-800/80 rounded-2xl px-2 pb-1.25">
             <thead>
                 <tr>
@@ -69,7 +121,8 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
                     </th>
                 </tr>
             </thead>
-            <tbody>
+            <Transition name="tbody-fade" mode="out-in" @before-leave="onBeforeLeave" @enter="onEnter" @after-enter="onAfterEnter">
+            <tbody :key="String(isLoading)">
                 <tr v-if="isLoading">
                     <td :colspan="2 + columns.length" class="py-32">
                         <div class="flex flex-col items-center justify-center text-gray-400">
@@ -93,17 +146,67 @@ const isIndeterminate = computed(() => props.selectedFiles.size > 0 && props.sel
                 <template v-else>
                     <FileRow v-for="(item, index) in items" :key="item.id" :item="item" :columns="columns"
                         :selected="selectedFiles.has(item.id)" :is-drop-target="dropTargetId === item.id"
-                        :is-first="index === 0" :is-last="index === items.length - 1"
+                        :is-first="index === 0" :is-last="index === items.length - 1 && !hasMore"
                         @dragstart="emit('dragstart', $event, item)" @dragover="emit('dragover', $event, item)"
                         @dragleave="emit('dragleave')" @drop="emit('drop', $event, item)"
                         @toggle-select="emit('toggleSelection', item.id)" @contextmenu="emit('contextmenu', $event, item)"
                         @open="emit('open', item)" />
+                    <tr v-if="isLoadingMore">
+                        <td :colspan="2 + columns.length" class="py-4">
+                            <div class="flex items-center justify-center">
+                                <AppSpinner size="sm" />
+                            </div>
+                        </td>
+                    </tr>
                 </template>
             </tbody>
+            </Transition>
         </table>
+        </div>
+        <!-- Infinite scroll sentinel -->
+        <div v-if="hasMore && !isLoading" ref="sentinelRef" class="h-1" />
         <div v-if="isExternalDragging"
             class="absolute inset-0 z-50 bg-primary-50/25 border-2 border-primary-500 border-dashed rounded-xl flex flex-col items-center justify-center pointer-events-none backdrop-blur-xs max-h-[calc(100vh-10rem)]">
             <p class="text-xl font-semibold text-primary-700">{{ t('files.dragAndDrop') }}</p>
         </div>
     </div>
 </template>
+
+<style scoped>
+.tbody-fade-enter-active {
+    transition: opacity 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tbody-fade-leave-active {
+    transition: opacity 100ms ease-in;
+}
+.tbody-fade-enter-from {
+    opacity: 0;
+}
+.tbody-fade-leave-to {
+    opacity: 0;
+}
+
+/* Stagger each row as the tbody enters */
+.tbody-fade-enter-active tr { animation: row-in 260ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+.tbody-fade-enter-active tr:nth-child(1)  { animation-delay:   0ms; }
+.tbody-fade-enter-active tr:nth-child(2)  { animation-delay:  30ms; }
+.tbody-fade-enter-active tr:nth-child(3)  { animation-delay:  55ms; }
+.tbody-fade-enter-active tr:nth-child(4)  { animation-delay:  75ms; }
+.tbody-fade-enter-active tr:nth-child(5)  { animation-delay:  90ms; }
+.tbody-fade-enter-active tr:nth-child(6)  { animation-delay: 105ms; }
+.tbody-fade-enter-active tr:nth-child(7)  { animation-delay: 118ms; }
+.tbody-fade-enter-active tr:nth-child(8)  { animation-delay: 128ms; }
+.tbody-fade-enter-active tr:nth-child(9)  { animation-delay: 136ms; }
+.tbody-fade-enter-active tr:nth-child(n+10) { animation-delay: 144ms; }
+
+@keyframes row-in {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+</style>
