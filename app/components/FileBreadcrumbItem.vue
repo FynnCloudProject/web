@@ -24,7 +24,7 @@ const { t } = useI18n()
 
 // Helper to determine if we should show the icon-only version
 const isIconOnly = computed(() => {
-    return !!props.item.icon || props.item.labelKey === 'navigation.allFiles' || (!props.item.id && props.index === 0)
+    return !!props.item.icon || props.item.labelKey === 'navigation.all' || (!props.item.id && props.index === 0)
 })
 
 // Shared class computations
@@ -34,16 +34,23 @@ const wrapperClasses = computed(() => [
     props.preventNavigation ? 'cursor-pointer' : ''
 ])
 
-const backgroundClasses = computed(() => [
-    'absolute inset-0 bg-linear-to-b shadow-[inset_0_2px_2px_rgba(255,255,255,0.3),0_4px_6px_rgba(0,0,0,0.1)] transition-all duration-150 ease-out rounded-full',
-    props.isLast
-        ? `from-${props.item.color ?? 'primary'}-500 to-${props.item.color ?? 'primary'}-700 group-active:from-${props.item.color ?? 'primary'}-600 group-active:to-${props.item.color ?? 'primary'}-800`
-        : 'from-white to-gray-200 dark:from-zinc-700 dark:to-zinc-900 group-active:from-gray-100 group-active:to-gray-300 dark:group-active:from-zinc-800 dark:group-active:to-zinc-900',
+const baseBackgroundClasses = computed(() => [
+    'absolute inset-0 bg-linear-to-b rounded-full',
+    'from-white to-gray-200 dark:from-zinc-700 dark:to-zinc-900',
+    'group-active:from-gray-100 group-active:to-gray-300 dark:group-active:from-zinc-800 dark:group-active:to-zinc-900',
+    'shadow-[0_4px_6px_rgba(0,0,0,0.1)]',
     props.isDragOver ? 'ring-2 ring-primary-500' : ''
 ])
 
+const primaryBackgroundClasses = computed(() => [
+    'absolute inset-0 bg-linear-to-b rounded-full transition-opacity duration-150 ease-out',
+    `from-${props.item.color ?? 'primary'}-500 to-${props.item.color ?? 'primary'}-700`,
+    `group-active:from-${props.item.color ?? 'primary'}-600 group-active:to-${props.item.color ?? 'primary'}-800`,
+    props.isLast ? 'opacity-100' : 'opacity-0'
+])
+
 const contentClasses = computed(() => [
-    'relative z-10 flex items-center justify-center gap-2 transition-transform duration-150 ease-out',
+    'relative z-10 flex items-center justify-center gap-2 transition-all duration-150 ease-out',
     props.isLast ? 'text-white' : 'text-gray-900 dark:text-zinc-100',
     !isIconOnly.value ? 'font-sans font-medium tracking-tight drop-shadow-md' : ''
 ])
@@ -58,9 +65,12 @@ const handleClick = (e: MouseEvent) => emit('click', e)
 
 <template>
     <component :is="componentType" :to="!preventNavigation ? to : undefined" :class="wrapperClasses"
-        :title="isIconOnly ? t('navigation.allFiles') : undefined" :draggable="false" @dragover="handleDragover"
+        :title="isIconOnly ? t('navigation.all') : undefined" :draggable="false" @dragover="handleDragover"
         @dragleave="handleDragleave" @drop="handleDrop" @click="handleClick">
-        <div :class="backgroundClasses"></div>
+        <div :class="baseBackgroundClasses"></div>
+        <div :class="primaryBackgroundClasses"></div>
+        <!-- Inset highlight sits above both gradient layers -->
+        <div class="absolute inset-0 rounded-full shadow-[inset_0_2px_2px_rgba(255,255,255,0.3)] pointer-events-none"></div>
 
         <div :class="contentClasses">
             <template v-if="isIconOnly">
