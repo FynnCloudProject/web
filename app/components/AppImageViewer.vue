@@ -219,8 +219,7 @@ function handleKeydown(e: KeyboardEvent) {
                             @wheel="handleWheel" @mousedown="startDrag" @mousemove="onDrag" @mouseup="stopDrag"
                             @mouseleave="stopDrag" @touchstart="startDrag" @touchmove="onDrag" @touchend="stopDrag">
                             <div v-if="isLoading" class="flex flex-col items-center gap-3">
-                                <AppSpinner size="lg" color="text-purple-500" />
-                                <p class="text-gray-500 dark:text-gray-400 font-medium">Loading Image...</p>
+                                <AppLoader size="lg" label="Loading Image..." />
                             </div>
 
                             <div v-else-if="error" class="text-center p-6 max-w-md">

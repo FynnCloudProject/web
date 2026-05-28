@@ -67,12 +67,23 @@ const loadTrack = async () => {
     }
 
     try {
-        const response = await useApi<Blob>(
-            trackSrc.value,
-            {
-                responseType: 'blob'
-            }
-        )
+        const { shareToken } = usePreview()
+        let response: Blob
+        if (shareToken.value) {
+            response = await $fetch<Blob>(
+                trackSrc.value,
+                {
+                    responseType: 'blob'
+                }
+            )
+        } else {
+            response = await useApi<Blob>(
+                trackSrc.value,
+                {
+                    responseType: 'blob'
+                }
+            )
+        }
 
         if (!response) {
             throw new Error(`Failed to load audio`)
@@ -307,7 +318,7 @@ onUnmounted(() => {
         enter-to-class="translate-y-0" leave-active-class="transition-transform duration-300 ease-in"
         leave-from-class="translate-y-0" leave-to-class="translate-y-full">
         <div ref="containerRef" v-if="isVisible"
-            class="absolute bottom-0 left-0 right-0 w-full z-40 flex flex-col justify-end pointer-events-none">
+            class="fixed bottom-0 left-0 right-0 w-full z-40 flex flex-col justify-end pointer-events-none">
             <div
                 class="bg-white/80 dark:bg-neutral-900/80 backdrop-blur-sm mb-2 mx-2 text-gray-900 dark:text-gray-100 rounded-2xl shadow-2xl p-1 flex flex-row gap-3 pointer-events-auto border border-gray-200 dark:border-neutral-700 transition-colors">
                 <template v-if="error">
