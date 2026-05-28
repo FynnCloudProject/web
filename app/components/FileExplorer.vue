@@ -24,19 +24,25 @@ const {
   breadcrumbs: breadcrumbsModel,
   currentParentID: currentFolderID,
   isLoading,
+  isLoadingMore,
+  hasMore,
+  loadMore,
+  sortField,
+  sortDirection,
+  toggleSort,
   createFolder,
   deleteFiles,
   deleteFilesPermanently,
   renameFile,
   moveFile,
   restoreFile,
+  toggleFavorite,
   refresh,
   getDeleteDescription
 } = props.manager
 
 const { selectedFiles, isAllSelected, isIndeterminate, toggleSelection, toggleSelectAll, clearSelection } = useFileSelection()
-const { sortField, sortDirection, sortedItems, toggleSort } = useFileSorting(currentItems)
-const { activeColumns } = useFileColumns(toRef(props, 'isTrash'))
+const { availableColumns, activeColumns, toggleColumn } = useFileColumns(toRef(props, 'isTrash'))
 
 const {
   dragGhostRef,
@@ -67,6 +73,7 @@ const showCreateFolderModal = ref(false)
 const showDeleteConfirm = ref(false)
 const showRenameModal = ref(false)
 const showMoveDialog = ref(false)
+const showShareDialog = ref(false)
 
 const newFolderName = ref('')
 const renameName = ref('')
@@ -75,8 +82,8 @@ const renameExtension = ref('')
 const currentDirectory = computed(() => {
   const lastItem = breadcrumbsModel.value?.[breadcrumbsModel.value.length - 1]
   if (lastItem?.labelKey) return t(lastItem.labelKey)
-  if (lastItem && !lastItem.id && !lastItem.labelKey) return t('navigation.allFiles')
-  return lastItem?.name || t('navigation.allFiles')
+  if (lastItem && !lastItem.id && !lastItem.labelKey) return t('navigation.all')
+  return lastItem?.name || t('navigation.all')
 })
 
 const deleteDescription = computed(() => getDeleteDescription(activeItems.value, props.isTrash))
@@ -148,7 +155,7 @@ const startRename = async (item: FileItem) => {
 }
 
 const handleRename = async () => {
-  const item = activeItems.value
+  const item = activeItems.value[0]
   if (!item || !renameName.value) return
   try {
     const fullName = renameExtension.value ? `${renameName.value}.${renameExtension.value}` : renameName.value
@@ -199,19 +206,34 @@ const handleDownloadFile = async (item: FileItem) => {
   }
 }
 
+const handleToggleFavorite = async (item: FileItem) => {
+  try {
+    await toggleFavorite(item.id)
+  } catch (e) {
+    toast.error(t('files.error.favoriteFailed'))
+  }
+}
+
+const openShareDialog = (item: FileItem) => {
+  activeItems.value = [item]
+  showShareDialog.value = true
+}
+
 const contextMenuRef = ref()
 const handleContextMenu = (event: MouseEvent, item: FileItem) => contextMenuRef.value?.open(event, item)
 
 const handleContextMenuAction = (action: string, item: FileItem) => {
   if (!item) return
   switch (action) {
-    case 'open': openFile(item, sortedItems.value); break
+    case 'open': openFile(item, currentItems.value); break
     case 'download': handleDownloadFile(item); break
     case 'move-to-recycle-bin': openDeleteConfirm(item); break
     case 'restore': handleRestore(item); break
     case 'delete-permanently': openDeleteConfirm(item); break
     case 'rename': startRename(item); break
     case 'move': openMoveDialog(item); break
+    case 'toggle-favorite': handleToggleFavorite(item); break
+    case 'share': openShareDialog(item); break
   }
 }
 
@@ -227,15 +249,17 @@ watch(() => breadcrumbsModel.value, (newVal) => {
     @dragover.prevent @dragleave.prevent="onGlobalDragLeave" @drop.prevent="(e) => onGlobalDrop(e, readOnly)">
 
     <FileExplorerToolbar :current-directory="currentDirectory" :breadcrumbs="breadcrumbsModel" :read-only="readOnly"
-      :has-items="currentItems.length > 0" :is-trash="isTrash" @upload="(files: File[]) => handleUploadFiles(files)"
-      @create-folder="openCreateFolderModal" @move="handleMoveFile" />
+      :has-items="currentItems.length > 0" :is-trash="isTrash" :available-columns="availableColumns"
+      :active-columns="activeColumns" @upload="(files: File[]) => handleUploadFiles(files)"
+      @create-folder="openCreateFolderModal" @move="handleMoveFile" @toggle-column="toggleColumn" />
 
-    <FileExplorerTable :items="sortedItems" :columns="activeColumns" :sort-field="sortField"
+    <FileExplorerTable :items="currentItems" :columns="activeColumns" :sort-field="sortField"
       :sort-direction="sortDirection" :selected-files="selectedFiles" :drop-target-id="dropTargetId"
-      :is-external-dragging="isExternalDragging" :read-only="readOnly" :is-loading="isLoading" @toggle-sort="toggleSort"
+      :is-external-dragging="isExternalDragging" :read-only="readOnly" :is-loading="isLoading"
+      :is-loading-more="isLoadingMore" :has-more="hasMore" @toggle-sort="toggleSort"
       @toggle-select-all="toggleSelectAll(currentItems)" @toggle-selection="toggleSelection"
       @contextmenu="handleContextMenu" @open="handleContextMenuAction('open', $event)" @dragstart="onRowDragStart"
-      @dragover="onRowDragOver" @dragleave="dropTargetId = null" @drop="onRowDrop" />
+      @dragover="onRowDragOver" @dragleave="dropTargetId = null" @drop="onRowDrop" @load-more="loadMore" />
 
 
     <Teleport to="body">
@@ -266,6 +290,8 @@ watch(() => breadcrumbsModel.value, (newVal) => {
       @rename="handleRename" @delete="confirmDelete" @moved="handleMoveFile" />
 
     <files-context-menu ref="contextMenuRef" @action="handleContextMenuAction" />
+
+    <AppShareDialog v-model="showShareDialog" :file="activeItems[0]" />
 
     <FileExplorerActionBar :selected-count="selectedFiles.size" :is-trash="isTrash" @restore="handleRestore()"
       @move="openMoveDialog()" @delete="openDeleteConfirm()" @clear-selection="clearSelection" />
