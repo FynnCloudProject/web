@@ -102,70 +102,40 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="toast-container flex items-stretch min-w-40 max-w-md rounded-xl overflow-hidden backdrop-blur-sm transition-all duration-300 ease-out"
+    <div class="toast-container flex items-stretch min-w-64 max-w-sm rounded-lg overflow-hidden transition-all duration-300 ease-out shadow-lg"
         :class="[
             config.toastBg,
-            config.borderColor,
-            config.glowColor,
         ]" @mouseenter="pauseProgress" @mouseleave="resumeProgress">
-        <div class="flex-1 flex items-center gap-3 px-4 py-4 relative">
+        <div class="flex-1 flex items-center gap-3 px-4 py-3 relative">
             <Icon :name="config.icon"
-                class="w-6 h-6 relative z-10 drop-shadow-sm text-white transition-transform duration-300 ease-out" />
+                class="w-5 h-5 shrink-0 relative z-10 text-white/90" />
 
             <div class="flex-1 min-w-0">
-                <p class="text-sm font-medium leading-relaxed break-words text-white">
+                <p class="text-sm font-medium leading-snug break-words text-white">
                     {{ toast.message }}
                 </p>
             </div>
 
             <button @click="handleClose"
-                class="shrink-0 p-1.5 rounded-full hover:bg-white/20 active:bg-white/30 transition-all duration-200 flex items-center justify-center group active:scale-90"
+                class="shrink-0 p-1 rounded-md hover:bg-white/15 active:bg-white/25 transition-colors duration-150 flex items-center justify-center active:scale-90"
                 aria-label="Close notification">
-                <Icon name="heroicons:x-mark" class="w-5 h-5 text-white" />
+                <Icon name="heroicons:x-mark" class="w-4 h-4 text-white/70 hover:text-white" />
             </button>
+        </div>
 
-            <!-- Progress bar with smooth animation -->
-            <div v-if="duration" class="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
-                <div class="h-full transition-all duration-100 ease-linear rounded-r-full" :class="config.progressBg"
-                    :style="{
-                        width: `${progress}%`,
-                        opacity: isHovered ? 0.5 : 1
-                    }"></div>
-            </div>
+        <!-- Progress bar at bottom -->
+        <div v-if="duration" class="absolute bottom-0 left-0 right-0 h-0.5 bg-black/10">
+            <div class="h-full transition-all duration-100 ease-linear" :class="config.progressBg"
+                :style="{
+                    width: `${progress}%`,
+                    opacity: isHovered ? 0.4 : 0.7
+                }"></div>
         </div>
     </div>
 </template>
 
 <style scoped>
 .toast-container {
-    box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.1),
-        0 4px 6px -2px rgba(0, 0, 0, 0.05),
-        0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.dark .toast-container {
-    box-shadow:
-        0 10px 15px -3px rgba(0, 0, 0, 0.4),
-        0 4px 6px -2px rgba(0, 0, 0, 0.3),
-        0 0 0 1px rgba(255, 255, 255, 0.1);
-}
-
-.toast-container:hover {
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.15),
-        0 10px 10px -5px rgba(0, 0, 0, 0.08),
-        0 0 0 1px rgba(0, 0, 0, 0.05);
-}
-
-.dark .toast-container:hover {
-    box-shadow:
-        0 20px 25px -5px rgba(0, 0, 0, 0.5),
-        0 10px 10px -5px rgba(0, 0, 0, 0.4),
-        0 0 0 1px rgba(255, 255, 255, 0.15);
-}
-
-.icon-wrapper {
-    animation: iconEntry 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
 }
 </style>
