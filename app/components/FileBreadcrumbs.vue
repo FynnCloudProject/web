@@ -20,13 +20,12 @@ const handleClick = (event: MouseEvent, item: BreadcrumbItem) => {
     }
 }
 
-const getPathForIndex = (index: number) => {
-    if (index === 0) return undefined
-    const path = props.items.slice(1, index + 1).map(item => item.name).join('/')
-    return '/' + path
+const getItemTo = (item: BreadcrumbItem) => {
+    if (!item.id && !item.path) return '/'
+    return item.path
+        ? item.path
+        : { path: props.isTrash ? `/trash/${item.id}` : `/files/${item.id}` }
 }
-
-// Drag and Drop Logic
 const dragOverIndex = ref<number | null>(null)
 
 const onDragOver = (event: DragEvent, index: number) => {
@@ -72,14 +71,6 @@ const onDrop = (event: DragEvent, item: BreadcrumbItem) => {
     }
 }
 
-const getItemTo = (item: BreadcrumbItem, index: number) => {
-    if (!item.id && !item.path) return '/'
-    return item.path
-        ? item.path
-        : { path: props.isTrash ? `/trash/${item.id}` : `/files/${item.id}`, query: { path: getPathForIndex(index) } }
-}
-
-// Auto-scroll logic
 const scrollContainer = ref<HTMLElement | null>(null)
 
 const scrollToEnd = () => {
@@ -100,8 +91,7 @@ onMounted(() => {
 <template>
     <div ref="scrollContainer"
         class="flex flex-row items-center text-sm space-x-1.5 overflow-x-scroll overflow-y-hidden scrollbar-hide px-1 py-1 pb-2 max-w-full">
-        <template v-for="(item, index) in items" :key="index">
-            <!-- Separator -->
+        <template v-for="(item, index) in items" :key="item.labelKey || item.id || item.name">
             <svg v-if="index > 0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"
                 class="w-3.5 h-3.5 text-gray-400 shrink-0">
                 <path fill-rule="evenodd"
@@ -109,7 +99,7 @@ onMounted(() => {
                     clip-rule="evenodd" />
             </svg>
             <!-- Refactored Item -->
-            <FileBreadcrumbItem :item="item" :to="getItemTo(item, index)" :index="index"
+            <FileBreadcrumbItem :item="item" :to="getItemTo(item)" :index="index"
                 :is-last="items.length === index + 1 || (items.length === 1 && index === 0)"
                 :is-drag-over="dragOverIndex === index" :prevent-navigation="preventNavigation" class="shrink-0"
                 @dragover="onDragOver($event, index)" @dragleave="onDragLeave" @drop="onDrop($event, item)"
@@ -130,3 +120,4 @@ onMounted(() => {
     /* Firefox */
 }
 </style>
+
