@@ -33,9 +33,9 @@ const canMoveHere = computed(() => {
 })
 
 const currentFolderName = computed(() => {
-    if (!currentFolderId.value) return t('navigation.allFiles')
+    if (!currentFolderId.value) return t('navigation.all')
     const last = breadcrumbs.value[breadcrumbs.value.length - 1]
-    return last ? last.name : t('navigation.allFiles')
+    return last ? last.name : t('navigation.all')
 })
 
 const moveButtonLabel = computed(() => {
