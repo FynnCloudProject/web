@@ -9,6 +9,7 @@ const links = computed(() => [
         label: t('admin.users'), icon: 'heroicons:users-16-solid', to: '/admin/users'
     },
     { label: t('admin.tiers'), icon: 'heroicons:circle-stack-solid', to: '/admin/tiers' },
+    { label: t('admin.tasks.title'), icon: 'heroicons:clock-solid', to: '/admin/tasks' },
     { label: t('admin.settings'), icon: 'heroicons:cog-6-tooth-solid', to: '/admin/settings' },
 ])
 </script>
@@ -22,7 +23,7 @@ const links = computed(() => [
             <div class="grow">
             </div>
             <div class="px-2">
-                <AppSidebarItem :link="{ label: t('admin.backToFiles'), icon: 'heroicons:arrow-left', to: '/' }" />
+                <AppSidebarItem :link="{ label: t('admin.backToFiles'), icon: 'heroicons:arrow-left', to: '/files/' }" />
             </div>
         </div>
     </div>
