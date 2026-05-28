@@ -93,7 +93,14 @@ const actions = computed(() => {
     }
 
 
+    activeActions.push({
+        label: item.isFavorite ? t('files.actions.unfavorite') : t('files.actions.favorite'),
+        id: 'toggle-favorite',
+        icon: item.isFavorite ? 'star-filled' : 'star'
+    });
+
     activeActions.push(
+        { label: t('files.actions.share'), id: 'share', icon: 'share' },
         { label: t('files.actions.move.button'), id: 'move', icon: 'move' },
         { label: t('files.actions.rename.button'), id: 'rename', icon: 'edit' },
         { label: t('files.actions.delete.title'), id: 'move-to-recycle-bin', icon: 'trash', danger: true }
@@ -170,6 +177,25 @@ defineExpose({ open, close })
                         fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
+                    </svg>
+                    <svg v-if="action.icon === 'star'" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg v-if="action.icon === 'star-filled'" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                    </svg>
+                    <svg v-if="action.icon === 'share'" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="18" cy="5" r="3" />
+                        <circle cx="6" cy="12" r="3" />
+                        <circle cx="18" cy="19" r="3" />
+                        <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                        <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
                     </svg>
                     <span class="text-sm font-medium">{{ action.label }}</span>
                 </div>
