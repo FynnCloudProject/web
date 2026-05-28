@@ -3,10 +3,10 @@ const { t } = useI18n()
 const { user } = useAuth()
 
 const links = computed(() => [
-  { label: t('navigation.allFiles'), icon: 'heroicons:folder-solid', to: '/' },
-  { label: t('navigation.recentFiles'), icon: 'heroicons:clock-solid', to: '/recent' },
-  { label: t('navigation.favoriteFiles'), icon: 'heroicons:star-solid', to: '/favorites' },
-  { label: t('navigation.sharedFiles'), icon: 'heroicons:share-solid', to: '/shared' },
+  { label: t('navigation.all'), icon: 'heroicons:folder-solid', to: '/files/' },
+  { label: t('navigation.recent'), icon: 'heroicons:clock-solid', to: '/recent' },
+  { label: t('navigation.favorites'), icon: 'heroicons:star-solid', to: '/favorites' },
+  { label: t('navigation.shared'), icon: 'heroicons:share-solid', to: '/shared' },
 ])
 
 const { formattedUsage, percentage } = useQuota()
