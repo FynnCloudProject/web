@@ -52,20 +52,38 @@
     },
     "welcome": "Welcome",
     "error": {
-        "serverUnreachable": "Server unreachable",
+        "serverUnreachable": "Unable to connect to FynnCloud",
+        "serverOffline": "Server Offline",
         "networkError": "Network connection lost.",
         "unknown": "An unknown error occurred.",
         "unauthorized": "Session expired. Please login again.",
         "forbidden": "You do not have permission to access this resource.",
         "notFound": "The requested resource was not found.",
         "generic": "An error occurred",
-        "invalidRequest": "Invalid request"
+        "invalidRequest": "Invalid request",
+        "offline": {
+            "description": "Please check your internet connection or try again later. The app will automatically reconnect when the server becomes available.",
+            "banner": "Connection lost - reconnecting...",
+            "attemptCount": "attempt {n}",
+            "attempts": "Connection attempts",
+            "lastConnected": "Last connected",
+            "nextRetry": "Next retry",
+            "checking": "Checking connection...",
+            "stillUnable": "Still unable to connect. Will retry automatically.",
+            "justNow": "Just now",
+            "minutesAgo": "{n} min ago",
+            "hoursAgo": "{n}h ago"
+        }
+    },
+    "action": {
+        "retryConnection": "Retry Now",
+        "retry": "Retry"
     },
     "navigation": {
-        "allFiles": "All Files",
-        "recentFiles": "Recent Files",
-        "favoriteFiles": "Favorites",
-        "sharedFiles": "Shared",
+        "all": "All Files",
+        "recent": "Recent Files",
+        "favorites": "Favorites",
+        "shared": "Shared",
         "settings": "Settings",
         "trash": "Trash",
         "logout": "Logout"
@@ -155,6 +173,20 @@
              "title": "Move Items",
              "button": "Move Here",
              "selectDestination": "Select destination folder"
+        },
+        "share": {
+            "title": "Share",
+            "createLink": "Create Share Link",
+            "activeLinks": "Active Links",
+            "noLinks": "No share links yet. Create one to share this file.",
+            "copied": "Link copied to clipboard",
+            "copy": "Copy link",
+            "revoke": "Revoke link",
+            "expires": "Expires",
+            "folder": "Folder",
+            "createFailed": "Failed to create share link",
+            "revokeFailed": "Failed to revoke share link",
+            "copyFailed": "Failed to copy link to clipboard"
         }
     },
     "common": {
@@ -283,5 +315,19 @@
             "minutesAgo": "{n} min ago",
             "hoursAgo": "{n}h ago"
         }
+    },
+    "sharePage": {
+        "linkNotFound": "Link not found",
+        "linkNotFoundDesc": "This share link doesn't exist or has been revoked.",
+        "linkExpired": "Link expired",
+        "linkExpiredDesc": "This share link has expired.",
+        "somethingWentWrong": "Something went wrong",
+        "unableToLoad": "Unable to load the shared content.",
+        "emptyFolder": "This folder is empty.",
+        "previewNotAvailable": "Preview not available for this file type.",
+        "back": "Back",
+        "download": "Download",
+        "showPreview": "Show Preview",
+        "viewing": "Previewing {name}"
     }
 }

@@ -51,14 +51,32 @@
     },
     "welcome": "Willkommen",
     "error": {
-        "serverUnreachable": "Server nicht erreichbar",
+        "serverUnreachable": "Verbindung zu FynnCloud nicht möglich",
+        "serverOffline": "Server offline",
         "networkError": "Netzwerkverbindung unterbrochen.",
         "unknown": "Ein unbekannter Fehler ist aufgetreten.",
         "unauthorized": "Sitzung abgelaufen. Bitte erneut anmelden.",
         "forbidden": "Du hast keine Berechtigung, auf diese Ressource zuzugreifen.",
         "notFound": "Die angeforderte Ressource wurde nicht gefunden.",
         "generic": "Ein Fehler ist aufgetreten",
-        "invalidRequest": "Ungültige Anfrage"
+        "invalidRequest": "Ungültige Anfrage",
+        "offline": {
+            "description": "Bitte überprüfe deine Internetverbindung oder versuche es später erneut. Die App verbindet sich automatisch, sobald der Server wieder erreichbar ist.",
+            "banner": "Verbindung unterbrochen - Verbindung wird wiederhergestellt...",
+            "attemptCount": "Versuch {n}",
+            "attempts": "Verbindungsversuche",
+            "lastConnected": "Zuletzt verbunden",
+            "nextRetry": "Nächster Versuch",
+            "checking": "Verbindung wird geprüft...",
+            "stillUnable": "Verbindung weiterhin nicht möglich. Automatischer Neuversuch.",
+            "justNow": "Gerade eben",
+            "minutesAgo": "vor {n} Min.",
+            "hoursAgo": "vor {n} Std."
+        }
+    },
+    "action": {
+        "retryConnection": "Erneut versuchen",
+        "retry": "Wiederholen"
     },
     "navigation": {
         "allFiles": "Alle Dateien",
@@ -151,9 +169,9 @@
             "moveSuccess": "Elemente erfolgreich verschoben"
         },
         "move": {
-             "title": "Elemente verschieben",
-             "button": "Hierher verschieben",
-             "selectDestination": "Zielordner auswählen"
+            "title": "Elemente verschieben",
+            "button": "Hierher verschieben",
+            "selectDestination": "Zielordner auswählen"
         }
     },
     "common": {
@@ -281,5 +299,19 @@
             "minutesAgo": "Vor {n} Min.",
             "hoursAgo": "Vor {n} Std."
         }
+    },
+    "sharePage": {
+        "linkNotFound": "Link nicht gefunden",
+        "linkNotFoundDesc": "Dieser Freigabelink existiert nicht oder wurde widerrufen.",
+        "linkExpired": "Link abgelaufen",
+        "linkExpiredDesc": "Dieser Freigabelink ist abgelaufen.",
+        "somethingWentWrong": "Etwas ist schiefgelaufen",
+        "unableToLoad": "Inhalt konnte nicht geladen werden.",
+        "emptyFolder": "Dieser Ordner ist leer.",
+        "previewNotAvailable": "Vorschau für diesen Dateityp nicht verfügbar.",
+        "back": "Zurück",
+        "download": "Herunterladen",
+        "showPreview": "Vorschau",
+        "viewing": "Vorschau von {name}"
     }
 }

@@ -45,14 +45,32 @@
     },
     "welcome": "Benvenuto",
     "error": {
-        "serverUnreachable": "Server non raggiungibile",
+        "serverUnreachable": "Impossibile connettersi a FynnCloud",
+        "serverOffline": "Server offline",
         "networkError": "Connessione di rete persa.",
         "unknown": "Si è verificato un errore sconosciuto.",
         "unauthorized": "Sessione scaduta. Per favore accedi di nuovo.",
         "forbidden": "Non hai il permesso di accedere a questa risorsa.",
         "notFound": "La risorsa richiesta non è stata trovata.",
         "generic": "Si è verificato un errore",
-        "invalidRequest": "Richiesta non valida"
+        "invalidRequest": "Richiesta non valida",
+        "offline": {
+            "description": "Controlla la tua connessione Internet o riprova più tardi. L'app si riconnetterà automaticamente quando il server sarà disponibile.",
+            "banner": "Connessione persa - riconnessione in corso...",
+            "attemptCount": "tentativo {n}",
+            "attempts": "Tentativi di connessione",
+            "lastConnected": "Ultima connessione",
+            "nextRetry": "Prossimo tentativo",
+            "checking": "Verifica connessione...",
+            "stillUnable": "Connessione ancora impossibile. Nuovo tentativo automatico.",
+            "justNow": "Proprio ora",
+            "minutesAgo": "{n} min fa",
+            "hoursAgo": "{n}h fa"
+        }
+    },
+    "action": {
+        "retryConnection": "Riprova",
+        "retry": "Riprova"
     },
     "navigation": {
         "allFiles": "Tutti i file",
@@ -261,5 +279,19 @@
             "limitPlaceholder": "es. 100",
             "limitHint": "Inserisci il limite di archiviazione in gigabyte (GB)."
         }
+    },
+    "sharePage": {
+        "linkNotFound": "Link non trovato",
+        "linkNotFoundDesc": "Questo link di condivisione non esiste o è stato revocato.",
+        "linkExpired": "Link scaduto",
+        "linkExpiredDesc": "Questo link di condivisione è scaduto.",
+        "somethingWentWrong": "Qualcosa è andato storto",
+        "unableToLoad": "Impossibile caricare il contenuto condiviso.",
+        "emptyFolder": "Questa cartella è vuota.",
+        "previewNotAvailable": "Anteprima non disponibile per questo tipo di file.",
+        "back": "Indietro",
+        "download": "Scarica",
+        "showPreview": "Mostra anteprima",
+        "viewing": "Anteprima di {name}"
     }
 }

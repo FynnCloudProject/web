@@ -45,14 +45,32 @@
     },
     "welcome": "Bienvenue",
     "error": {
-        "serverUnreachable": "Serveur inaccessible",
+        "serverUnreachable": "Impossible de se connecter à FynnCloud",
+        "serverOffline": "Serveur hors ligne",
         "networkError": "Connexion réseau perdue.",
         "unknown": "Une erreur inconnue est survenue.",
         "unauthorized": "Session expirée. Veuillez vous reconnecter.",
         "forbidden": "Vous n'avez pas la permission d'accéder à cette ressource.",
         "notFound": "La ressource demandée est introuvable.",
         "generic": "Une erreur est survenue",
-        "invalidRequest": "Requête invalide"
+        "invalidRequest": "Requête invalide",
+        "offline": {
+            "description": "Veuillez vérifier votre connexion Internet ou réessayer plus tard. L'application se reconnectera automatiquement lorsque le serveur sera disponible.",
+            "banner": "Connexion perdue - reconnexion en cours...",
+            "attemptCount": "tentative {n}",
+            "attempts": "Tentatives de connexion",
+            "lastConnected": "Dernière connexion",
+            "nextRetry": "Prochaine tentative",
+            "checking": "Vérification de la connexion...",
+            "stillUnable": "Connexion toujours impossible. Nouvelle tentative automatique.",
+            "justNow": "À l'instant",
+            "minutesAgo": "il y a {n} min",
+            "hoursAgo": "il y a {n}h"
+        }
+    },
+    "action": {
+        "retryConnection": "Réessayer",
+        "retry": "Réessayer"
     },
     "navigation": {
         "allFiles": "Tous les fichiers",
@@ -261,5 +279,19 @@
             "limitPlaceholder": "ex. 100",
             "limitHint": "Saisir la limite de stockage en gigaoctets (Go)."
         }
+    },
+    "sharePage": {
+        "linkNotFound": "Lien non trouvé",
+        "linkNotFoundDesc": "Ce lien de partage n'existe pas ou a été révoqué.",
+        "linkExpired": "Lien expiré",
+        "linkExpiredDesc": "Ce lien de partage a expiré.",
+        "somethingWentWrong": "Une erreur est survenue",
+        "unableToLoad": "Impossible de charger le contenu partagé.",
+        "emptyFolder": "Ce dossier est vide.",
+        "previewNotAvailable": "Aperçu non disponible pour ce type de fichier.",
+        "back": "Retour",
+        "download": "Télécharger",
+        "showPreview": "Afficher l'aperçu",
+        "viewing": "Aperçu de {name}"
     }
 }
