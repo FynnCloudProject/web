@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const { networkDelay, isDevMenuOpen, forceError, simulate401, slowUploads, debugUI } = useDevConfig()
+const { networkDelay, isDevMenuOpen, forceError, simulate401, slowUploads, debugUI, showUUIDs } = useDevConfig()
 const { isOffline } = useBackEndConfig()
 const isDev = import.meta.env.DEV
 
@@ -138,6 +138,12 @@ const resetState = () => {
                                 :class="debugUI ? 'bg-teal-500 text-white border-teal-500 shadow-sm' : 'bg-white dark:bg-neutral-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-neutral-700 hover:border-teal-300'">
                                 <Icon name="heroicons:view-columns-20-solid" class="w-3.5 h-3.5" />
                                 UI Outlines
+                            </button>
+                            <button @click="showUUIDs = !showUUIDs"
+                                class="flex items-center justify-center gap-1.5 px-2 py-2 text-xs font-medium rounded-xl border transition-all duration-200"
+                                :class="showUUIDs ? 'bg-violet-500 text-white border-violet-500 shadow-sm' : 'bg-white dark:bg-neutral-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-neutral-700 hover:border-violet-300'">
+                                <Icon name="heroicons:finger-print-20-solid" class="w-3.5 h-3.5" />
+                                Show UUIDs
                             </button>
                             <button @click="resetState"
                                 class="flex items-center justify-center gap-1.5 px-2 py-2 text-xs font-medium rounded-xl border transition-all duration-200 bg-red-50 hover:bg-red-100 dark:bg-red-900/20 dark:hover:bg-red-900/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800 cursor-pointer">
