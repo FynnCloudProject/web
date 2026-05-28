@@ -7,18 +7,24 @@ const props = defineProps<{
     readOnly: boolean
     hasItems: boolean
     isTrash: boolean
+    availableColumns: ColumnDefinition[]
+    activeColumns: ColumnDefinition[]
 }>()
 
 const emit = defineEmits<{
     upload: [files: File[]]
     createFolder: []
     move: [payload: { sourceIds: string[], targetId: string | null }]
+    toggleColumn: [col: ColumnDefinition]
 }>()
 
 const { t } = useI18n()
 const fileInput = ref<HTMLInputElement | null>(null)
+const showColumnMenu = ref(false)
 
-const { availableColumns, activeColumns, showColumnMenu, toggleColumn } = useFileColumns(toRef(props, 'isTrash'))
+const toggleColumn = (col: ColumnDefinition) => {
+    emit('toggleColumn', col)
+}
 
 const handleTriggerUpload = () => {
     fileInput.value?.click()
