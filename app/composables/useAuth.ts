@@ -10,7 +10,6 @@ interface AuthUser {
 export const useAuth = () => {
   const user = useState<AuthUser | null>("user", () => null);
   const apiBase = useApiBase();
-  const route = useRoute();
 
   const generateRandomString = (length: number) => {
     const possible =
@@ -67,6 +66,7 @@ export const useAuth = () => {
     });
 
     user.value = userData;
+    const route = useRoute();
     const redirect = route.query.redirect?.toString();
     const safeRedirect = redirect && redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/';
     navigateTo(safeRedirect);
