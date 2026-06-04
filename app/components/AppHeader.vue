@@ -8,8 +8,6 @@ const homePath = computed<string>(() => {
     return route.path.includes('admin') ? '/admin' : '/'
 })
 
-
-const searchQuery = ref('')
 const handleLogout = async () => {
     await logout()
 }
@@ -40,7 +38,7 @@ const handleLogout = async () => {
 
             <div class="flex items-center gap-4">
                 <div class="flex-1 max-w-lg hidden md:block mr-8">
-                    <AppSearch v-model="searchQuery" />
+                    <AppSearch />
                 </div>
                 <div class="flex items-center gap-3">
                     <LanguageSwitcher />
