@@ -1,14 +1,25 @@
 export const useApi = <T>(url: string, options: any = {}) => {
   const apiBase = useApiBase();
+  const { handle401 } = useTokenRefresh();
+  // Capture state refs synchronously so they remain accessible after awaits
+  // (Nuxt instance context is lost after async boundaries during SSR).
+  const user = useState<any | null>("user");
 
   const defaults = {
     baseURL: apiBase,
   };
 
+  // Forward the browser's cookies to the backend when rendering on the server,
+  // so SSR API calls are authenticated.
+  const serverHeaders = import.meta.server
+    ? useRequestHeaders(["cookie"])
+    : {};
+
   const params = {
     ...defaults,
     ...options,
     headers: {
+      ...serverHeaders,
       ...options.headers,
     },
   };
@@ -49,7 +60,6 @@ export const useApi = <T>(url: string, options: any = {}) => {
           throw error;
         }
 
-        const { handle401 } = useTokenRefresh();
         const refreshed = await handle401();
 
         if (refreshed) {
@@ -57,7 +67,6 @@ export const useApi = <T>(url: string, options: any = {}) => {
         }
 
         // Refresh failed — force redirect to login
-        const user = useState<any | null>("user");
         user.value = null;
         await navigateTo("/auth/login");
         throw error;
