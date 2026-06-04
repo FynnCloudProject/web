@@ -2,39 +2,15 @@ import type { FileItem } from "~/types/file";
 
 export const useFileHandlers = () => {
   const router = useRouter();
-  const route = useRoute();
   const { play: playAudio } = useAudioPlayer();
   const { open: openPreview } = usePreview();
 
   const getNavigatePath = (item: FileItem) => {
     if (item.type !== "folder") return undefined;
     if (item.deletedAt) {
-      const currentPathQuery = (route.query.path as string) || "";
-      const newPath = currentPathQuery.endsWith("/")
-        ? currentPathQuery + item.name
-        : currentPathQuery + "/" + item.name;
-
-      return {
-        path: `/trash/${item.id}`,
-        query: {
-          ...route.query,
-          path: newPath,
-        },
-      };
+      return { path: `/trash/${item.id}` };
     }
-
-    const currentPathQuery = (route.query.path as string) || "";
-    const newPath = currentPathQuery.endsWith("/")
-      ? currentPathQuery + item.name
-      : currentPathQuery + "/" + item.name;
-
-    return {
-      path: `/files/${item.id}`,
-      query: {
-        ...route.query,
-        path: newPath,
-      },
-    };
+    return { path: `/files/${item.id}` };
   };
 
   const handlers: Record<
