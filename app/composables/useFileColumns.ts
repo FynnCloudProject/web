@@ -6,7 +6,7 @@ export function useFileColumns(isTrash: Ref<boolean>) {
 
   const availableColumns = computed<ColumnDefinition[]>(() => [
     { key: 'size', label: 'files.columns.size', type: 'size', sortable: true, class: 'w-32 hidden sm:table-cell' },
-    { key: 'updatedAt', label: 'files.columns.lastChanged', type: 'date', sortable: true, class: 'w-48 hidden md:table-cell' },
+    { key: 'lastModified', label: 'files.columns.lastChanged', type: 'date', sortable: true, class: 'w-48 hidden md:table-cell' },
     { key: 'createdAt', label: 'files.columns.created', type: 'date', sortable: true, class: 'w-48 hidden lg:table-cell' },
     ...(isTrash.value ? [{ key: 'deletedAt' as keyof FileItem, label: 'files.columns.deletedAt', type: 'date', sortable: true, class: 'w-48 hidden md:table-cell' } as ColumnDefinition] : [])
   ])
