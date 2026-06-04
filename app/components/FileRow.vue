@@ -4,6 +4,7 @@ import FileIcon from './FileIcon.vue'
 
 const { t, d, locale } = useI18n()
 const { showUUIDs } = useDevConfig()
+const router = useRouter()
 
 const props = defineProps<{
     item: FileItem
@@ -34,6 +35,12 @@ const cornerClasses = computed(() => [
     props.isLast ? 'last:rounded-br-xl' : 'last:rounded-br-md'
 ])
 
+const apiBase = useApiBase()
+const thumbnailUrl = computed(() => {
+    if (!props.item.hasThumbnail) return undefined
+    return `${apiBase}/api/files/${props.item.id}/thumbnail`
+})
+
 const handleRowClick = (event: MouseEvent) => {
     emit('click', event)
     emit('open')
@@ -60,15 +67,34 @@ const rowBackgroundClasses = computed(() => {
 const formatDate = (date: Date | undefined) => {
     if (!date) return ''
     try {
-        return new Intl.DateTimeFormat(locale.value, {
+        const datePart = new Intl.DateTimeFormat(locale.value, {
             year: 'numeric',
             month: 'short',
             day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
         }).format(date)
+        const timePart = new Intl.DateTimeFormat(locale.value, {
+            hour: '2-digit',
+            minute: '2-digit',
+        }).format(date)
+        return `${datePart}, ${timePart}`
     } catch (e) {
         return date.toLocaleDateString()
+    }
+}
+
+const formatDisplayPath = (path: string) => {
+    const rootName = t('navigation.all')
+    if (!path || path === '/') return rootName
+    const segments = path.split('/').filter(Boolean)
+    return [rootName, ...segments].join(' › ')
+}
+
+const handlePathClick = (event: MouseEvent) => {
+    event.stopPropagation()
+    if (props.item.parent?.id) {
+        router.push(`/files/${props.item.parent.id}`)
+    } else {
+        router.push('/files/')
     }
 }
 </script>
@@ -80,10 +106,11 @@ const formatDate = (date: Date | undefined) => {
         @dblclick.prevent.stop="$emit('dblclick', $event)" @contextmenu.prevent.stop="$emit('contextmenu', $event)">
 
         <!-- Checkbox -->
-        <td class="px-6 py-4 whitespace-nowrap w-10 transition-all duration-200 border-y first:border-l last:border-r"
+        <td class="px-6 whitespace-nowrap w-10 transition-all duration-200 border-y first:border-l last:border-r"
             :class="[
                 ...cornerClasses,
-                rowBackgroundClasses
+                rowBackgroundClasses,
+                item.path ? 'py-2.5' : 'py-4'
             ]" @click.stop>
             <div class="flex items-center justify-center">
                 <AppCheckbox size="md" :model-value="selected" :box-class="selected ? 'border-white' : ''"
@@ -92,14 +119,14 @@ const formatDate = (date: Date | undefined) => {
         </td>
 
         <!-- Name -->
-        <td class="px-6 py-4 whitespace-nowrap transition-all duration-200 border-y first:border-l last:border-r"
-            :class="[
-                ...cornerClasses,
-                rowBackgroundClasses
-            ]">
+        <td class="px-6 whitespace-nowrap transition-all duration-200 border-y first:border-l last:border-r" :class="[
+            ...cornerClasses,
+            rowBackgroundClasses,
+            item.path ? 'py-2.5' : 'py-4'
+        ]">
             <div class="flex items-center relative z-10">
                 <div class="mr-4 shrink-0 transition-transform duration-200 flex items-center justify-center">
-                    <FileIcon :file-type="item.type" :selected="selected" />
+                    <FileIcon :file-type="item.type" :selected="selected" :thumbnail-url="thumbnailUrl" />
                 </div>
                 <div class="flex-1 min-w-0">
                     <span v-if="item.type === 'folder'" class="font-semibold truncate block text-base tracking-tight"
@@ -110,6 +137,24 @@ const formatDate = (date: Date | undefined) => {
                         :class="selected ? 'text-primary-50 drop-shadow-md' : 'text-gray-700 dark:text-zinc-300 dark:group-hover:text-zinc-50'">
                         {{ item.name }}
                     </span>
+                    <div v-if="item.path" class="flex items-center gap-1.5 mt-1 text-xs">
+                        <span :class="selected ? 'text-primary-200' : 'text-gray-400 dark:text-zinc-500'"
+                            class="font-normal select-none">in</span>
+                        <div class="flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full border transition-all duration-200 cursor-pointer"
+                            :class="selected
+                                ? 'bg-white/10 border-white/20 text-white hover:bg-white/20'
+                                : 'bg-gray-150/60 dark:bg-zinc-800/60 border-gray-200/60 dark:border-zinc-700/60 text-gray-500 dark:text-zinc-400 hover:bg-gray-200/80 dark:hover:bg-zinc-700/80 hover:text-gray-700 dark:hover:text-zinc-200'"
+                            @click="handlePathClick">
+                            <span class="opacity-70 shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                    class="w-3 h-3">
+                                    <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+                                </svg>
+                            </span>
+                            <span class="truncate " :title="formatDisplayPath(item.path)">{{
+                                formatDisplayPath(item.path) }}</span>
+                        </div>
+                    </div>
                     <span v-if="showUUIDs" class="truncate block text-[10px] font-mono opacity-60"
                         :class="selected ? 'text-primary-100' : 'text-gray-400 dark:text-zinc-500'">
                         {{ item.id }}
@@ -120,12 +165,13 @@ const formatDate = (date: Date | undefined) => {
 
         <!-- Dynamic Columns -->
         <td v-for="col in columns" :key="col.key"
-            class="px-6 py-4 whitespace-nowrap text-sm text-right transition-all duration-300 border-y first:border-l last:border-r "
+            class="px-6 whitespace-nowrap text-sm text-right transition-all duration-300 border-y first:border-l last:border-r"
             :class="[
                 col.class || '',
                 ...cornerClasses,
                 rowBackgroundClasses,
-                selected ? 'text-primary-50' : 'text-gray-500  dark:group-hover:text-zinc-300'
+                selected ? 'text-primary-50' : 'text-gray-500  dark:group-hover:text-zinc-300',
+                item.path ? 'py-2.5' : 'py-4'
             ]">
             <template v-if="col.type === 'size'">
                 {{ item.type === 'folder' ? '-' : item.size }}
