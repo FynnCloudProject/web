@@ -33,7 +33,7 @@ const resetState = () => {
 </script>
 
 <template>
-    <div v-if="isDev" class="fixed bottom-6 right-6 z-[90] flex flex-col items-end gap-3 font-sans">
+    <div v-if="isDev" class="fixed bottom-20 right-6 z-[90] flex flex-col items-end gap-3 font-sans">
 
         <!-- Expanded Menu Panel (Styled like AppDialog) -->
         <transition enter-active-class="transition ease-out duration-200"
