@@ -237,8 +237,9 @@ function handleKeydown(e: KeyboardEvent) {
                             </div>
 
                             <img v-else-if="previewUrl" :src="previewUrl" ref="imageRef"
-                                class="max-w-full max-h-full object-contain will-change-transform" :style="{
-                                    transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
+                                class="max-w-full max-h-full object-contain" :style="{
+                                    transform: (scale !== 1 || translateX !== 0 || translateY !== 0) ? `translate(${translateX}px, ${translateY}px) scale(${scale})` : undefined,
+                                    willChange: (isDragging || scale !== 1) ? 'transform' : undefined,
                                     cursor: isDragging ? 'grabbing' : 'grab'
                                 }" alt="Image Preview" draggable="false" />
                         </div>
