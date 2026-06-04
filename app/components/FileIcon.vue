@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { FileType } from '~/types/file'
-
 const props = defineProps<{
   fileType: FileType
   selected?: boolean
+  thumbnailUrl?: string
 }>()
 
 const iconMap: Record<FileType, string> = {
@@ -46,8 +46,20 @@ const iconName = computed(() => iconMap[props.fileType] || iconMap.file)
 const currentColorClass = computed(() =>
   props.selected ? 'text-white' : (colorMap[props.fileType] || 'text-gray-400')
 )
+
+const thumbFailed = ref(false)
+const showThumbnail = computed(() => props.thumbnailUrl && !thumbFailed.value)
 </script>
 
 <template>
-  <Icon :name="iconName" :class="[sizeClass, currentColorClass]" />
+  <span :class="[sizeClass, showThumbnail ? '' : currentColorClass, 'inline-flex items-center justify-center overflow-hidden']">
+    <img
+      v-if="showThumbnail"
+      :src="thumbnailUrl"
+      class="w-full h-full object-cover rounded-sm"
+      loading="lazy"
+      @error="thumbFailed = true"
+    />
+    <Icon v-else :name="iconName" class="w-full h-full" />
+  </span>
 </template>
