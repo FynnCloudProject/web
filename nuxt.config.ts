@@ -4,7 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineNuxtConfig({
   compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
-  ssr: false,
+  ssr: true,
   components: [
     {
       path: "~/components",
@@ -12,8 +12,25 @@ export default defineNuxtConfig({
     },
   ],
   icon: {
-    mode: "css",
-    cssLayer: "base",
+    mode: "svg",
+    serverBundle: "auto",
+    clientBundle: {
+      scan: true,
+      icons: [
+        "duo-icons:dashboard",
+        "heroicons:folder-solid",
+        "fa:file-image-o",
+        "fa:file-video-o",
+        "heroicons:musical-note-solid",
+        "fa:file-pdf-o",
+        "fa:file-text-o",
+        "garden:file-spreadsheet-stroke-16",
+        "fa:file-powerpoint-o",
+        "heroicons:archive-box-solid",
+        "heroicons:code-bracket",
+        "fa:file-o",
+      ],
+    },
   },
   nitro: {
     devProxy: {
@@ -51,6 +68,7 @@ export default defineNuxtConfig({
     ],
     strategy: "no_prefix",
     defaultLocale: "en",
+    baseUrl: process.env.NUXT_PUBLIC_SITE_URL,
     vueI18n: "./i18n.config.ts",
     detectBrowserLanguage: {
       useCookie: true,
