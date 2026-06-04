@@ -28,7 +28,7 @@ const error = ref<string | null>(null)
 // Computed
 const canMoveHere = computed(() => {
     if (props.items.some(item => item.id === currentFolderId.value)) return false
-    if (props.items.some(item => item.parent.id === currentFolderId.value)) return false
+    if (props.items.some(item => item.parent?.id === currentFolderId.value)) return false
     return true
 })
 
