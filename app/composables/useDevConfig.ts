@@ -20,6 +20,9 @@ export const useDevConfig = () => {
   const debugUI = import.meta.env.DEV
     ? useState<boolean>("dev-debug-ui", () => false)
     : ref(false);
+  const showUUIDs = import.meta.env.DEV
+    ? useState<boolean>("dev-show-uuids", () => false)
+    : ref(false);
 
   return {
     networkDelay,
@@ -28,5 +31,6 @@ export const useDevConfig = () => {
     simulate401,
     slowUploads,
     debugUI,
+    showUUIDs,
   };
 };
