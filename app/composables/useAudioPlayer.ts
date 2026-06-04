@@ -1,16 +1,20 @@
 import type { FileItem } from "~/types/file";
 
-// Global state to persist across components
-const currentTrack = ref<FileItem | null>(null);
-const isPlaying = ref(false);
-const isVisible = ref(false); // If player is shown
-const playerHeight = ref(0); // Height of the player in pixels
-const playlist = ref<FileItem[]>([]); // Playlist context
-
 export const useAudioPlayer = () => {
+  const currentTrack = useState<FileItem | null>("audio-current-track", () => null);
+  const isPlaying = useState("audio-is-playing", () => false);
+  const isVisible = useState("audio-is-visible", () => false);
+  const playerHeight = useState("audio-player-height", () => 0);
+  const playlist = useState<FileItem[]>("audio-playlist", () => []);
   const trackSrc = computed(() => {
     const apiBase = useApiBase();
     if (!currentTrack.value) return "";
+    const { shareToken, sharedRootFileID } = usePreview();
+    if (shareToken.value) {
+      return currentTrack.value.id === sharedRootFileID.value
+        ? `${apiBase}/api/share/${shareToken.value}/download`
+        : `${apiBase}/api/share/${shareToken.value}/download/${currentTrack.value.id}`;
+    }
     return `${apiBase}/api/files/${currentTrack.value.id}/download`;
   });
 
