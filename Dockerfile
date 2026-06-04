@@ -13,18 +13,21 @@ RUN npm ci
 # Copy source code
 COPY . .
 
-# Build the static site
-RUN npx nuxi generate
+# Build with Nitro SSR (server-side rendering)
+RUN npx nuxi build
 
-# Production stage - serve with nginx
-FROM nginx:alpine
+# Production stage - serve with Node.js / Nitro
+FROM node:25-slim AS runner
 
-# Copy built static files from builder stage
-COPY --from=builder /app/.output/public /usr/share/nginx/html
+WORKDIR /app
 
-# Copy nginx configuration for SPA routing
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+ENV NODE_ENV=production
+ENV NITRO_HOST=0.0.0.0
+ENV NITRO_PORT=3000
 
-EXPOSE 80
+# Copy built Nitro output from builder stage
+COPY --from=builder /app/.output ./.output
 
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 3000
+
+CMD ["node", ".output/server/index.mjs"]
